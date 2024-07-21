@@ -1,7 +1,9 @@
 import sys
 import os
 from src.exception import CustomException
+import numpy as np
 import pandas as pd
+import re
 from sklearn.model_selection import train_test_split
 
 
@@ -16,11 +18,17 @@ class DataIngest:
         
 
     def start_data_ingestion_from_csv(self, sample_size=0.15, test_size=0.25, random_state=42):
+        '''
+        This function performs the following 2 tasks:
+        - reads the csv files into dataframes
+        - performs tran-test split
+        '''
 
         try:
             # Reading the complete csv files
             data = pd.read_csv(os.path.join('notebooks/data/model_building/data.csv'))
             data_res = pd.read_csv(os.path.join('notebooks/data/model_building/resources.csv'))
+
             
             # Sampling data
             sample_row_count = int(sample_size*data.shape[0])
@@ -30,10 +38,14 @@ class DataIngest:
             # Creating train-test split for data
             train_data, test_data = train_test_split(data_sample, test_size=test_size, random_state=random_state)
 
+            # Adhoc fix for description column in data_res:
+            data_res.fillna('', inplace=True)
+            data_res['description'] = data_res['description'].apply(lambda x: re.sub(r'\\[nrt]', ' ', x.strip()))
+            data_res.replace('', np.nan, inplace=True)
+
             # Creating train-test split for resources
-            train_proj_ids = train_data['id'].values
-            train_data_res = data_res.loc[data_res['id'].isin(train_proj_ids)].copy()
-            test_data_res = data_res.loc[~data_res['id'].isin(train_proj_ids)].copy()
+            train_data_res = data_res.loc[data_res['id'].isin(train_data['id'].values)].copy()
+            test_data_res = data_res.loc[data_res['id'].isin(test_data['id'].values)].copy()
 
 
             # Creating a directory
