@@ -67,13 +67,13 @@ class DataIngest:
 if __name__=='__main__':
 
     print('Ingestion Testing started!')
-    ingest_obj = DataIngest()
-    train_pt, test_pt, train_res_pt, test_res_pt = ingest_obj.start_data_ingestion_from_csv(sample_size=0.15, test_size=0.25, random_state=42)
+    # ingest_obj = DataIngest()
+    # train_pt, test_pt, train_res_pt, test_res_pt = ingest_obj.start_data_ingestion_from_csv(sample_size=0.15, test_size=0.25, random_state=42)
 
-    print(train_pt)
-    print(test_pt)
-    print(train_res_pt)
-    print(test_res_pt)
+    # print(train_pt)
+    # print(test_pt)
+    # print(train_res_pt)
+    # print(test_res_pt)
 
 
 
