@@ -203,7 +203,7 @@ class FeatureEngineeringNLPBasic1:
 
 
 
-    def gen_nlp_basic_title_feats(self, df_inp, fit=0, test_mode=0):
+    def gen_nlp_basic_title_feats(self, df_inp:pd.DataFrame, fit=0, test_mode=0):
     
         '''
         This function extracts the below nlp features from the textual feature: 'project_title'
@@ -223,6 +223,7 @@ class FeatureEngineeringNLPBasic1:
         
         Inputs: 
         - Main dataframe
+        - fit: 0/1
         
         Helper Methods used:
         - naive_features_title_token
@@ -240,7 +241,7 @@ class FeatureEngineeringNLPBasic1:
             if test_mode==1:
                 df_inp = df_inp.iloc[:1000].copy()
 
-            print('Generating NLP-Basic features from project_title')
+            print('Generating NLP-Basic features: project_title')
             df_text1 = df_inp[['id', 'project_title', 'project_is_approved']].copy()
             
             # Perform primary preprocessing & generate naive token features
@@ -291,7 +292,7 @@ class FeatureEngineeringNLPBasic1:
 
 if __name__=='__main__':
 
-    print('Feature Engineering NLP-Basic started!')
+    print('Feature Engineering NLP-Basic started: Project Title!')
 
     # print(STOPWORDS_ENGLISH[:100])
     # print_sep_len = 100
