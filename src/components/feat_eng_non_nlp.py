@@ -167,7 +167,7 @@ class FeatureEngineeringNonNLP:
 
 
 
-    def gen_non_nlp_feats(self, df_inp1, df_inp2, fit=0, test_mode=0):
+    def gen_non_nlp_feats(self, df_inp1:pd.DataFrame, df_inp2:pd.DataFrame, fit=0, test_mode=0):
 
         '''
         This function generates the below NON-NLP features:
