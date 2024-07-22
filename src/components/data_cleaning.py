@@ -13,7 +13,7 @@ class DataCleaning:
         self.fit_flag = 0
 
 
-    def clean_nontext_feat(self, df_inp):
+    def clean_nontext_feat(self, df_inp:pd.DataFrame):
         '''
         This function does the following tasks:
         - Drops unnecessary column 'Unnamed: 0'
@@ -44,7 +44,7 @@ class DataCleaning:
             print(custom_exception)
     
 
-    def clean_text_feat(self, df_inp):
+    def clean_text_feat(self, df_inp:pd.DataFrame):
         '''
         This function does the following tasks:
         - Seperates out the textual features 
@@ -99,7 +99,7 @@ class DataCleaning:
 
 
 
-    def clean_res(self, df_inp, fit=0):
+    def clean_res(self, df_inp:pd.DataFrame, fit=0):
         '''
         This function does the following tasks:
         - If the price of a resource is less than $1, cap it to $1
