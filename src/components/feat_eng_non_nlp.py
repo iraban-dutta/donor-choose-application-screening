@@ -126,7 +126,7 @@ class FeatureEngineeringNonNLP:
 
             # Tagging an item as expensive if it's price is above upper whisker of the price distribution (log) :
             if self.expensive_item_price_threshold == -100:
-                raise Exception('Fit_Transform Method not called yet! First call fit_transform, then use this method.')
+                raise Exception('Object not fitted yet!')
             df_res['expensive_item_quantity'] = df_res[['quantity', 'item_price_log']].apply(lambda x: x.iloc[0] if x.iloc[1]>self.expensive_item_price_threshold else 0, axis=1)
 
 
@@ -167,7 +167,7 @@ class FeatureEngineeringNonNLP:
 
 
 
-    def gen_non_nlp_feats_fit_transform(self, df_inp1, df_inp2, test_mode=0):
+    def gen_non_nlp_feats(self, df_inp1, df_inp2, fit=0, test_mode=0):
 
         '''
         This function generates the below NON-NLP features:
@@ -201,10 +201,11 @@ class FeatureEngineeringNonNLP:
         Inputs: 
         - Main dataframe
         - Resources dataframe (Aggregation at project level performed inside this function)
+        - fit: 0/1
 
         Actions:
-        - This function learns parameters from the train data and uses it to perform feature engineering on the train data
-        - The same parameters will be used to perform feature engineering on the test data as well (check transform version of same method)
+        - fit=1 : To be used with train data, fits the object first by learning parameters from the train data and uses it to perform feature engineering on the train data
+        - fit=0 : To be used with test data, using the learnt parameters from train data, performs feature engineering on the test data
         
         '''
 
@@ -214,7 +215,8 @@ class FeatureEngineeringNonNLP:
                 df_inp1 = df_inp1.iloc[:1000].copy()
                 df_inp2 = df_inp2.loc[df_inp2['id'].isin(df_inp1['id'].values)].copy()
             
-            df = df_inp1[['id', 'teacher_id', 'teacher_prefix', 'school_state', 'project_submitted_datetime', 
+            df = df_inp1[['id', 'project_is_approved', 
+                          'teacher_id', 'teacher_prefix', 'school_state', 'project_submitted_datetime', 
                           'project_grade_category', 'project_subject_categories', 'project_subject_subcategories', 
                           'teacher_number_of_previously_posted_projects']].copy()
             df_res = df_inp2.copy()
@@ -236,8 +238,10 @@ class FeatureEngineeringNonNLP:
 
             
             df_res['item_price_log'] = np.log(df_res['price'])
-            # Learn Parameters from df_res
-            self.resource_feats_fit(df_inp=df_res)
+
+            if fit==1:
+                # Learn Parameters from df_res
+                self.resource_feats_fit(df_inp=df_res)
             # Using learnt parameters perform feature engineering
             df_res_agg = self.resource_feats_transform(df_inp=df_res)
 
@@ -253,145 +257,61 @@ class FeatureEngineeringNonNLP:
 
 
 
-
-    def gen_non_nlp_feats_transform(self, df_inp1, df_inp2, test_mode=0):
-
-        '''
-        This function generates the below NON-NLP features:
-
-        Temporal Features: 
-        - 'sub_year'                                     : Submission Year
-        - 'sub_month'                                    : Submission Month
-        - 'sub_dow'                                      : Submission Day of Week
-        - 'sub_hour'                                     : Submission Hour
-        
-        Location Features: 
-        - 'school_state'                                 : State of the school from where submission is made
-        
-        Teacher Features: 
-        - 'records_per_user'                             : Number of submissions made by the teacher (including the current submission)
-        - 'records_per_user_cat'                         : 'First-Time' or 'Returning' teacher
-        - 'teacher_prefix'                               : Teacher's Prefix ('Ms.', 'Mrs.', 'Mr.', 'Others')
-        - 'teacher_number_of_previously_posted_projects' : Number of past submissions made by the teacher at the time of current submission
-        
-        Project Features:
-        - 'project_grade_category'                       : Class Standard for whom the submission is made
-        - 'project_subject_categories'                   : Subject Category of project 
-        - 'project_subject_subcategories'                : Subject Sub-Category of project
-        
-        Resource Features:
-        - 'res_item_q_ln'                                : Total quantity of all project resources requested for sponsorship (Log-Transformed)
-        - 'res_item_uniq_ln'                             : Total unique project resources requested for sponsorship (Log-Transformed)
-        - 'res_exp_item_qcat'                            : Total quantity of all expensive project resources requested for sponsorship (Categorical)
-        - 'res_price_ln'                                 : Total price of all project resources requested for sponsorship (Log-Transformed)
-        
-        Inputs: 
-        - Main dataframe
-        - Resources dataframe (Aggregation at project level performed inside this function)
-
-        Actions:
-        - Using the learnt parameters from the train data, feature engineering is performed on the test data
-        
-        '''
-
-        
-        try:
-            if test_mode==1:
-                df_inp1 = df_inp1.iloc[:1000].copy()
-                df_inp2 = df_inp2.loc[df_inp2['id'].isin(df_inp1['id'].values)].copy()
-            
-            df = df_inp1[['id', 'teacher_id', 'teacher_prefix', 'school_state', 'project_submitted_datetime', 
-                          'project_grade_category', 'project_subject_categories', 'project_subject_subcategories', 
-                          'teacher_number_of_previously_posted_projects']].copy()
-            df_res = df_inp2.copy()
-
-
-            df = self.temporal_feats(df_inp=df)
-            df = self.location_feats(df_inp=df)
-            df = self.teacher_feats(df_inp=df)
-
-            df_psc = self.proj_cat_feats(df_inp=df)
-            df_pssc = self.proj_subcat_feats(df_inp=df)
-            # Merging categories and sub-categories
-            df_proj_cat_merged = pd.merge(df_psc, df_pssc, left_index=True, right_index=True, how='left').reset_index()
-            df_proj_cat_merged.drop(['Warmth, Care & Hunger_y', 'Special Needs_y'], axis=1, inplace=True)
-            df_proj_cat_merged.rename({'Warmth, Care & Hunger_x':'Warmth, Care & Hunger', 'Special Needs_x':'Special Needs'}, axis=1, inplace=True)
-
-            df.drop('project_subject_categories', axis=1, inplace=True)
-            df.drop('project_subject_subcategories', axis=1, inplace=True)
-
-
-            df_res['item_price_log'] = np.log(df_res['price'])
-            # Using learnt parameters perform feature engineering
-            df_res_agg = self.resource_feats_transform(df_inp=df_res)
-
-            # Merging all the dfs together
-            df_non_nlp = pd.merge(df, df_proj_cat_merged, on='id', how='left')
-            df_non_nlp = pd.merge(df_non_nlp, df_res_agg, on='id', how='left')
-
-            return df_non_nlp
-
-        except Exception as e:
-            custom_exception = CustomException(e, sys)
-            print(custom_exception)   
-
-
-        
 
 if __name__=='__main__':
 
-    print('Feature Engineering testing started')
+    print('Feature Engineering NON-NLP testing started')
 
-    # print_sep_len = 100
+    print_sep_len = 100
 
-    # ingest_obj = DataIngest()
-    # train_pt, test_pt, train_res_pt, test_res_pt = ingest_obj.start_data_ingestion_from_csv(sample_size=0.15, test_size=0.25, random_state=42)
+    ingest_obj = DataIngest()
+    train_pt, test_pt, train_res_pt, test_res_pt = ingest_obj.start_data_ingestion_from_csv(sample_size=0.15, test_size=0.25, random_state=42)
 
-    # train_df = pd.read_csv(train_pt)
-    # test_df = pd.read_csv(test_pt)
-    # train_res_df = pd.read_csv(train_res_pt)
-    # test_res_df = pd.read_csv(test_res_pt)
+    train_df = pd.read_csv(train_pt)
+    test_df = pd.read_csv(test_pt)
+    train_res_df = pd.read_csv(train_res_pt)
+    test_res_df = pd.read_csv(test_res_pt)
 
-    # print(train_df.shape, test_df.shape)
-    # print(train_res_df.shape, test_res_df.shape)
-    # print('-'*print_sep_len)
-
-
-    # data_clean_obj = DataCleaning()
-
-    # train_non_text_df = data_clean_obj.clean_nontext_feat(train_df)
-    # test_non_text_df = data_clean_obj.clean_nontext_feat(test_df)
-    # print('Non-Text DF:')
-    # print(train_non_text_df.shape, test_non_text_df.shape)
-    # print(train_non_text_df.columns)
-    # print('-'*print_sep_len)
-
-    # train_text_df = data_clean_obj.clean_text_feat(train_df)
-    # test_text_df = data_clean_obj.clean_text_feat(test_df)
-    # print('Text DF:')
-    # print(train_text_df.shape, test_text_df.shape)
-    # print(train_text_df.columns)
-    # print('-'*print_sep_len)
-
-    # train_res_df = data_clean_obj.clean_res_fit_transform(train_res_df)
-    # test_res_df = data_clean_obj.clean_res_transform(test_res_df)
-    # print('Resource DF:')
-    # print(train_res_df.shape, test_res_df.shape)
-    # print(train_res_df.columns)
-    # print('-'*print_sep_len)
+    print(train_df.shape, test_df.shape)
+    print(train_res_df.shape, test_res_df.shape)
+    print('-'*print_sep_len)
 
 
-    # fe_non_nlp_obj = FeatureEngineeringNonNLP()
-    # train_non_nlp = fe_non_nlp_obj.gen_non_nlp_feats_fit_transform(df_inp1=train_non_text_df, df_inp2=train_res_df, test_mode=0)
-    # test_non_nlp = fe_non_nlp_obj.gen_non_nlp_feats_transform(df_inp1=test_non_text_df, df_inp2=test_res_df, test_mode=0)
-    # print('Non-NLP DF:')
-    # print(train_non_nlp.shape)
-    # print(train_non_nlp.columns)
-    # print(train_non_nlp.isna().sum())
-    # print('-'*print_sep_len)
-    # print(test_non_nlp.shape)
-    # print(test_non_nlp.columns)
-    # print(test_non_nlp.isna().sum())
+    data_clean_obj = DataCleaning()
+
+    train_non_text_df = data_clean_obj.clean_nontext_feat(train_df)
+    test_non_text_df = data_clean_obj.clean_nontext_feat(test_df)
+    print('Non-Text DF:')
+    print(train_non_text_df.shape, test_non_text_df.shape)
+    print(train_non_text_df.columns)
+    print('-'*print_sep_len)
+
+    train_text_df = data_clean_obj.clean_text_feat(train_df)
+    test_text_df = data_clean_obj.clean_text_feat(test_df)
+    print('Text DF:')
+    print(train_text_df.shape, test_text_df.shape)
+    print(train_text_df.columns)
+    print('-'*print_sep_len)
+
+    train_res_df = data_clean_obj.clean_res(df_inp=train_res_df, fit=1)
+    test_res_df = data_clean_obj.clean_res(df_inp=test_res_df, fit=0)
+    print('Resource DF:')
+    print(train_res_df.shape, test_res_df.shape)
+    print(train_res_df.columns)
+    print('-'*print_sep_len)
+
+
+    fe_non_nlp_obj = FeatureEngineeringNonNLP()
+    train_non_nlp_df = fe_non_nlp_obj.gen_non_nlp_feats(df_inp1=train_non_text_df, df_inp2=train_res_df, fit=1, test_mode=0)
+    test_non_nlp_df = fe_non_nlp_obj.gen_non_nlp_feats(df_inp1=test_non_text_df, df_inp2=test_res_df, fit=0, test_mode=0)
+    print('Non-NLP DF:')
+    print(train_non_nlp_df.shape)
+    print(train_non_nlp_df.columns)
+    print(train_non_nlp_df.isna().sum())
+    print('-'*print_sep_len)
+    print(test_non_nlp_df.shape)
+    print(test_non_nlp_df.columns)
+    print(test_non_nlp_df.isna().sum())
     
 
 
