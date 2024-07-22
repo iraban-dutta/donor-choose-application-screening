@@ -262,56 +262,56 @@ if __name__=='__main__':
 
     print('Feature Engineering NON-NLP testing started')
 
-    print_sep_len = 100
+    # print_sep_len = 100
 
-    ingest_obj = DataIngest()
-    train_pt, test_pt, train_res_pt, test_res_pt = ingest_obj.start_data_ingestion_from_csv(sample_size=0.15, test_size=0.25, random_state=42)
+    # ingest_obj = DataIngest()
+    # train_pt, test_pt, train_res_pt, test_res_pt = ingest_obj.start_data_ingestion_from_csv(sample_size=0.15, test_size=0.25, random_state=42)
 
-    train_df = pd.read_csv(train_pt)
-    test_df = pd.read_csv(test_pt)
-    train_res_df = pd.read_csv(train_res_pt)
-    test_res_df = pd.read_csv(test_res_pt)
+    # train_df = pd.read_csv(train_pt)
+    # test_df = pd.read_csv(test_pt)
+    # train_res_df = pd.read_csv(train_res_pt)
+    # test_res_df = pd.read_csv(test_res_pt)
 
-    print(train_df.shape, test_df.shape)
-    print(train_res_df.shape, test_res_df.shape)
-    print('-'*print_sep_len)
-
-
-    data_clean_obj = DataCleaning()
-
-    train_non_text_df = data_clean_obj.clean_nontext_feat(train_df)
-    test_non_text_df = data_clean_obj.clean_nontext_feat(test_df)
-    print('Non-Text DF:')
-    print(train_non_text_df.shape, test_non_text_df.shape)
-    print(train_non_text_df.columns)
-    print('-'*print_sep_len)
-
-    train_text_df = data_clean_obj.clean_text_feat(train_df)
-    test_text_df = data_clean_obj.clean_text_feat(test_df)
-    print('Text DF:')
-    print(train_text_df.shape, test_text_df.shape)
-    print(train_text_df.columns)
-    print('-'*print_sep_len)
-
-    train_res_df = data_clean_obj.clean_res(df_inp=train_res_df, fit=1)
-    test_res_df = data_clean_obj.clean_res(df_inp=test_res_df, fit=0)
-    print('Resource DF:')
-    print(train_res_df.shape, test_res_df.shape)
-    print(train_res_df.columns)
-    print('-'*print_sep_len)
+    # print(train_df.shape, test_df.shape)
+    # print(train_res_df.shape, test_res_df.shape)
+    # print('-'*print_sep_len)
 
 
-    fe_non_nlp_obj = FeatureEngineeringNonNLP()
-    train_non_nlp_df = fe_non_nlp_obj.gen_non_nlp_feats(df_inp1=train_non_text_df, df_inp2=train_res_df, fit=1, test_mode=0)
-    test_non_nlp_df = fe_non_nlp_obj.gen_non_nlp_feats(df_inp1=test_non_text_df, df_inp2=test_res_df, fit=0, test_mode=0)
-    print('Non-NLP DF:')
-    print(train_non_nlp_df.shape)
-    print(train_non_nlp_df.columns)
-    print(train_non_nlp_df.isna().sum())
-    print('-'*print_sep_len)
-    print(test_non_nlp_df.shape)
-    print(test_non_nlp_df.columns)
-    print(test_non_nlp_df.isna().sum())
+    # data_clean_obj = DataCleaning()
+
+    # train_non_text_df = data_clean_obj.clean_nontext_feat(train_df)
+    # test_non_text_df = data_clean_obj.clean_nontext_feat(test_df)
+    # print('Non-Text DF:')
+    # print(train_non_text_df.shape, test_non_text_df.shape)
+    # print(train_non_text_df.columns)
+    # print('-'*print_sep_len)
+
+    # train_text_df = data_clean_obj.clean_text_feat(train_df)
+    # test_text_df = data_clean_obj.clean_text_feat(test_df)
+    # print('Text DF:')
+    # print(train_text_df.shape, test_text_df.shape)
+    # print(train_text_df.columns)
+    # print('-'*print_sep_len)
+
+    # train_res_df = data_clean_obj.clean_res(df_inp=train_res_df, fit=1)
+    # test_res_df = data_clean_obj.clean_res(df_inp=test_res_df, fit=0)
+    # print('Resource DF:')
+    # print(train_res_df.shape, test_res_df.shape)
+    # print(train_res_df.columns)
+    # print('-'*print_sep_len)
+
+
+    # fe_non_nlp_obj = FeatureEngineeringNonNLP()
+    # train_non_nlp_df = fe_non_nlp_obj.gen_non_nlp_feats(df_inp1=train_non_text_df, df_inp2=train_res_df, fit=1, test_mode=0)
+    # test_non_nlp_df = fe_non_nlp_obj.gen_non_nlp_feats(df_inp1=test_non_text_df, df_inp2=test_res_df, fit=0, test_mode=0)
+    # print('Non-NLP DF:')
+    # print(train_non_nlp_df.shape)
+    # print(train_non_nlp_df.columns)
+    # print(train_non_nlp_df.isna().sum())
+    # print('-'*print_sep_len)
+    # print(test_non_nlp_df.shape)
+    # print(test_non_nlp_df.columns)
+    # print(test_non_nlp_df.isna().sum())
     
 
 
