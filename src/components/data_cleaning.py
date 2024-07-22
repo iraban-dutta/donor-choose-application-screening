@@ -10,6 +10,7 @@ class DataCleaning:
 
     def __init__(self):
         self.miss_des_dict = {}
+        self.fit_flag = 0
 
 
     def clean_nontext_feat(self, df_inp):
@@ -98,13 +99,15 @@ class DataCleaning:
 
 
 
-    def clean_res_fit_transform(self, df_inp):
+    def clean_res(self, df_inp, fit=0):
         '''
         This function does the following tasks:
         - If the price of a resource is less than $1, cap it to $1
         - Drops duplicate rows
-        - For the missing values in 'description', learns the mapping b/w price and most frequently occuring resource for the same price
-        - Imputes the missing values in 'description' with the most frequently occuring resource for the same price
+
+        Actions:
+        - fit=1: To be used with train data, for the missing values in 'description', learns the mapping b/w price and most frequently occuring resource for the same price
+        - fit=0: To be used with test data, using learnt mapping, imputes the missing values in 'description' with the most frequently occuring resource for the same price
         '''
 
         try: 
@@ -117,25 +120,33 @@ class DataCleaning:
             df_res.drop_duplicates(inplace=True)
             
             # Fixing missing values in 'description'
-            # Step1: Finding the price of those rows where description is missing
-            miss_des_unique_price = df_res.loc[df_res['description'].isna(), 'price'].sort_values().unique()
-            # print(miss_des_unique_price)
 
-            # Step2: Implementing the strategy for imputation in code: Creating a dictionary which stores the mapping b/w price and most frequent item
-            self.miss_des_dict = {}
-            df_res_with_des = df_res.loc[~df_res['description'].isna()]
-            price_range = 2.5
+            if fit==1:
 
-            for price in miss_des_unique_price:
-                df_match = df_res_with_des.loc[(df_res_with_des['price']>=(price-price_range)) & (df_res_with_des['price']<=(price+price_range))]
-                # print(price, df_match.shape[0])
-                if df_match.shape[0]>0:
-                    mode_val = df_match['description'].mode()[0]
-                    self.miss_des_dict[price] = mode_val
+                self.fit_flag=1
+
+                # Step1: Finding the price of those rows where description is missing
+                miss_des_unique_price = df_res.loc[df_res['description'].isna(), 'price'].sort_values().unique()
+                # print(miss_des_unique_price)
+
+                # Step2: Implementing the strategy for imputation in code: Creating a dictionary which stores the mapping b/w price and most frequent item
+                self.miss_des_dict = {}
+                df_res_with_des = df_res.loc[~df_res['description'].isna()]
+                price_range = 2.5
+
+                for price in miss_des_unique_price:
+                    df_match = df_res_with_des.loc[(df_res_with_des['price']>=(price-price_range)) & (df_res_with_des['price']<=(price+price_range))]
+                    # print(price, df_match.shape[0])
+                    if df_match.shape[0]>0:
+                        mode_val = df_match['description'].mode()[0]
+                        self.miss_des_dict[price] = mode_val
 
             
             # Step3: Imputing missing values in 'description'
+            if self.fit_flag==0:
+                raise Exception('Object not fitted yet!')
             # df_res['description'] = df_res[['description', 'price']].apply(lambda x: self.impute_res_description(x[1]) if x[0]=='' or (isinstance(x[0], float) and np.isnan(x[0])) else x[0], axis=1)   
+            # df_res['description'] = df_res[['description', 'price']].apply(lambda x: self.miss_des_dict[x[1]] if pd.isna(x[0]) else x[0], axis=1)  
             df_res['description'] = df_res[['description', 'price']].apply(lambda x: self.impute_res_description(x.iloc[1]) if pd.isna(x.iloc[0]) else x.iloc[0], axis=1)   
 
             return  df_res
@@ -146,35 +157,6 @@ class DataCleaning:
 
 
 
-    def clean_res_transform(self, df_inp):
-        '''
-        This function does the following tasks:
-        - If the price of a resource is less than $1, cap it to $1
-        - Drops duplicate rows
-        - Using learnt mapping, imputes the missing values in 'description' with the most frequently occuring resource for the same price
-        '''
-
-        try:
-            df_res = df_inp.copy()
-
-            # If price is less than $1, then cap it to $1
-            df_res.loc[df_res['price']<1, 'price'] = 1
-                
-            # Drop Duplicates
-            df_res.drop_duplicates(inplace=True)
-            
-            # Fixing missing values in 'description'        
-            # Step1: Imputing missing values in 'description'
-            # df_res['description'] = df_res[['description', 'price']].apply(lambda x: self.miss_des_dict[x[1]] if pd.isna(x[0]) else x[0], axis=1)  
-            df_res['description'] = df_res[['description', 'price']].apply(lambda x: self.impute_res_description(x.iloc[1]) if pd.isna(x.iloc[0]) else x.iloc[0], axis=1)    
-
-            return  df_res
-        
-        except Exception as e:
-            custom_exception = CustomException(e, sys)
-            print(custom_exception)
-
-
 
     
 
@@ -182,9 +164,9 @@ if __name__=='__main__':
 
     print('Data Cleaning testing started')
 
-    # print_sep_len = 100
-    # ingest_obj = DataIngest()
-    # train_pt, test_pt, train_res_pt, test_res_pt = ingest_obj.start_data_ingestion_from_csv(sample_size=1, test_size=0.25, random_state=42)
+    print_sep_len = 100
+    ingest_obj = DataIngest()
+    train_pt, test_pt, train_res_pt, test_res_pt = ingest_obj.start_data_ingestion_from_csv(sample_size=1, test_size=0.25, random_state=42)
 
     # train_df = pd.read_csv(train_pt)
     # test_df = pd.read_csv(test_pt)
@@ -219,49 +201,49 @@ if __name__=='__main__':
     # print('-'*print_sep_len)
 
 
-    # train_res_df = pd.read_csv(train_res_pt)
-    # test_res_df = pd.read_csv(test_res_pt)
-    # print(train_res_df.shape, test_res_df.shape)
+    train_res_df = pd.read_csv(train_res_pt)
+    test_res_df = pd.read_csv(test_res_pt)
+    print(train_res_df.shape, test_res_df.shape)
 
 
-    # # Test Methods: clean_res_fit_transform, clean_res_transform
-    # print('Show all columns in dataframe:')
-    # print(train_res_df.columns)
-    # print('-'*print_sep_len)
-    # print('Show missing columns:')
-    # print(train_res_df.isna().sum())
-    # print('-'*print_sep_len)
+    # Test Methods: clean_res_fit_transform, clean_res_transform
+    print('Show all columns in dataframe:')
+    print(train_res_df.columns)
+    print('-'*print_sep_len)
+    print('Show missing columns:')
+    print(train_res_df.isna().sum())
+    print('-'*print_sep_len)
 
 
-    # print('Show all columns in dataframe:')
-    # print(test_res_df.columns)
-    # print('-'*print_sep_len)
-    # print('Show missing columns:')
-    # print(test_res_df.isna().sum())
-    # print('-'*print_sep_len)
+    print('Show all columns in dataframe:')
+    print(test_res_df.columns)
+    print('-'*print_sep_len)
+    print('Show missing columns:')
+    print(test_res_df.isna().sum())
+    print('-'*print_sep_len)
 
-    # data_clean_obj = DataCleaning()
-    # train_res_df = data_clean_obj.clean_res_fit_transform(train_res_df)
-    # test_res_df = data_clean_obj.clean_res_transform(test_res_df)
-
-
-    # print('Show all columns in dataframe:')
-    # print(train_res_df.columns)
-    # print('-'*print_sep_len)
-    # print('Show missing columns:')
-    # print(train_res_df.isna().sum())
-    # print('-'*print_sep_len)
+    data_clean_obj = DataCleaning()
+    train_res_df = data_clean_obj.clean_res(df_inp=train_res_df, fit=1)
+    test_res_df = data_clean_obj.clean_res(df_inp=test_res_df, fit=0)
 
 
-    # print('Show all columns in dataframe:')
-    # print(test_res_df.columns)
-    # print('-'*print_sep_len)
-    # print('Show missing columns:')
-    # print(test_res_df.isna().sum())
-    # print('-'*print_sep_len)
+    print('Show all columns in dataframe:')
+    print(train_res_df.columns)
+    print('-'*print_sep_len)
+    print('Show missing columns:')
+    print(train_res_df.isna().sum())
+    print('-'*print_sep_len)
 
 
-    # print(train_res_df['price'].min(), test_res_df['price'].min())
+    print('Show all columns in dataframe:')
+    print(test_res_df.columns)
+    print('-'*print_sep_len)
+    print('Show missing columns:')
+    print(test_res_df.isna().sum())
+    print('-'*print_sep_len)
+
+
+    print(train_res_df['price'].min(), test_res_df['price'].min())
 
 
 
