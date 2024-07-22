@@ -1,4 +1,5 @@
 
+import sys
 import numpy as np
 import pandas as pd
 from src.exception import CustomException
@@ -20,22 +21,26 @@ class DataCleaning:
         - Removes the textual features
         '''
 
-        df_proj_app = df_inp.copy()
+        try:
+            df_proj_app = df_inp.copy()
 
-        # Drop column 'Unnamed: 0'
-        df_proj_app.drop('Unnamed: 0', axis=1, inplace=True)
+            # Drop column 'Unnamed: 0'
+            df_proj_app.drop('Unnamed: 0', axis=1, inplace=True)
 
-        # Drop rows with missing values in 'teacher_prefix'
-        df_proj_app.dropna(subset=['teacher_prefix'], axis=0, inplace=True)
-    
-        # Drop Duplicates
-        df_proj_app.drop_duplicates(inplace=True)
+            # Drop rows with missing values in 'teacher_prefix'
+            df_proj_app.dropna(subset=['teacher_prefix'], axis=0, inplace=True)
+        
+            # Drop Duplicates
+            df_proj_app.drop_duplicates(inplace=True)
 
-        # Removing the textual features
-        df_proj_app.drop(['project_title', 'project_essay_1', 'project_essay_2', 'project_essay_3', 'project_essay_4', 'project_resource_summary'], axis=1, inplace=True)
+            # Removing the textual features
+            df_proj_app.drop(['project_title', 'project_essay_1', 'project_essay_2', 'project_essay_3', 'project_essay_4', 'project_resource_summary'], axis=1, inplace=True)
 
-
-        return df_proj_app
+            return df_proj_app
+        
+        except Exception as e:
+            custom_exception = CustomException(e, sys)
+            print(custom_exception)
     
 
     def clean_text_feat(self, df_inp):
@@ -47,41 +52,49 @@ class DataCleaning:
         - From 17th May, 2016: new1 = old1 and new2 = old2
         '''
 
+        try: 
+            df_text_feat = df_inp[['id', 'project_title', 'project_resource_summary', 'project_is_approved']].copy()
 
-        df_text_feat = df_inp[['id', 'project_title', 'project_resource_summary', 'project_is_approved']].copy()
-
-        # Fixing the missing values in project essays
-        # Fixing the missing values in project essays: Step1
-        df_ess = df_inp[['id', 'project_essay_1', 'project_essay_2', 'project_essay_3', 'project_essay_4', 'project_submitted_datetime']].copy()
-        df_ess['dos'] = pd.to_datetime(df_ess['project_submitted_datetime']).dt.date.astype('str')
-    
-        # Fixing the missing values in project essays: Step2 (Handling the case on & after 17th May, 2016)
-        df_ess['proj_essay1'] = df_ess['project_essay_1']
-        df_ess['proj_essay2'] = df_ess['project_essay_2']
-
-        # Fixing the missing values in project essays: Step3 (Handling the case before 17th May, 2016)
-        df_ess.loc[df_ess['dos']<'2016-05-17', 'proj_essay1'] = df_ess.loc[df_ess['dos']<'2016-05-17', 'project_essay_1'] + \
-                                                                ' ' + \
-                                                                df_ess.loc[df_ess['dos']<'2016-05-17', 'project_essay_2']
-
-        df_ess.loc[df_ess['dos']<'2016-05-17', 'proj_essay2'] = df_ess.loc[df_ess['dos']<'2016-05-17', 'project_essay_3'] + \
-                                                                ' ' + \
-                                                                df_ess.loc[df_ess['dos']<'2016-05-17', 'project_essay_4'] 
+            # Fixing the missing values in project essays
+            # Fixing the missing values in project essays: Step1
+            df_ess = df_inp[['id', 'project_essay_1', 'project_essay_2', 'project_essay_3', 'project_essay_4', 'project_submitted_datetime']].copy()
+            df_ess['dos'] = pd.to_datetime(df_ess['project_submitted_datetime']).dt.date.astype('str')
         
-        df_ess_no_missval = df_ess[['id', 'proj_essay1', 'proj_essay2']].copy()
+            # Fixing the missing values in project essays: Step2 (Handling the case on & after 17th May, 2016)
+            df_ess['proj_essay1'] = df_ess['project_essay_1']
+            df_ess['proj_essay2'] = df_ess['project_essay_2']
 
-        # Merging all the textual features after handling missing values
-        df_text_feat = pd.merge(df_text_feat, df_ess_no_missval, on='id', how='inner')
+            # Fixing the missing values in project essays: Step3 (Handling the case before 17th May, 2016)
+            df_ess.loc[df_ess['dos']<'2016-05-17', 'proj_essay1'] = df_ess.loc[df_ess['dos']<'2016-05-17', 'project_essay_1'] + \
+                                                                    ' ' + \
+                                                                    df_ess.loc[df_ess['dos']<'2016-05-17', 'project_essay_2']
 
+            df_ess.loc[df_ess['dos']<'2016-05-17', 'proj_essay2'] = df_ess.loc[df_ess['dos']<'2016-05-17', 'project_essay_3'] + \
+                                                                    ' ' + \
+                                                                    df_ess.loc[df_ess['dos']<'2016-05-17', 'project_essay_4'] 
+            
+            df_ess_no_missval = df_ess[['id', 'proj_essay1', 'proj_essay2']].copy()
 
-        return df_text_feat
+            # Merging all the textual features after handling missing values
+            df_text_feat = pd.merge(df_text_feat, df_ess_no_missval, on='id', how='inner')
+
+            return df_text_feat
+        
+        except Exception as e:
+            custom_exception = CustomException(e, sys)
+            print(custom_exception)
 
 
     def impute_res_description(self, price):
-        if price in self.miss_des_dict:
-            return self.miss_des_dict[price]
-        else:
-            return 'Unknown'
+        try:
+            if price in self.miss_des_dict:
+                return self.miss_des_dict[price]
+            else:
+                return 'Unknown'
+            
+        except Exception as e:
+            custom_exception = CustomException(e, sys)
+            print(custom_exception)
 
 
 
@@ -94,37 +107,42 @@ class DataCleaning:
         - Imputes the missing values in 'description' with the most frequently occuring resource for the same price
         '''
 
-        df_res = df_inp.copy()
+        try: 
+            df_res = df_inp.copy()
 
-        # If price is less than $1, then cap it to $1
-        df_res.loc[df_res['price']<1, 'price'] = 1
+            # If price is less than $1, then cap it to $1
+            df_res.loc[df_res['price']<1, 'price'] = 1
+                
+            # Drop Duplicates
+            df_res.drop_duplicates(inplace=True)
             
-        # Drop Duplicates
-        df_res.drop_duplicates(inplace=True)
+            # Fixing missing values in 'description'
+            # Step1: Finding the price of those rows where description is missing
+            miss_des_unique_price = df_res.loc[df_res['description'].isna(), 'price'].sort_values().unique()
+            # print(miss_des_unique_price)
+
+            # Step2: Implementing the strategy for imputation in code: Creating a dictionary which stores the mapping b/w price and most frequent item
+            self.miss_des_dict = {}
+            df_res_with_des = df_res.loc[~df_res['description'].isna()]
+            price_range = 2.5
+
+            for price in miss_des_unique_price:
+                df_match = df_res_with_des.loc[(df_res_with_des['price']>=(price-price_range)) & (df_res_with_des['price']<=(price+price_range))]
+                # print(price, df_match.shape[0])
+                if df_match.shape[0]>0:
+                    mode_val = df_match['description'].mode()[0]
+                    self.miss_des_dict[price] = mode_val
+
+            
+            # Step3: Imputing missing values in 'description'
+            # df_res['description'] = df_res[['description', 'price']].apply(lambda x: self.impute_res_description(x[1]) if x[0]=='' or (isinstance(x[0], float) and np.isnan(x[0])) else x[0], axis=1)   
+            df_res['description'] = df_res[['description', 'price']].apply(lambda x: self.impute_res_description(x.iloc[1]) if pd.isna(x.iloc[0]) else x.iloc[0], axis=1)   
+
+            return  df_res
         
-        # Fixing missing values in 'description'
-        # Step1: Finding the price of those rows where description is missing
-        miss_des_unique_price = df_res.loc[df_res['description'].isna(), 'price'].sort_values().unique()
-        # print(miss_des_unique_price)
-
-        # Step2: Implementing the strategy for imputation in code: Creating a dictionary which stores the mapping b/w price and most frequent item
-        self.miss_des_dict = {}
-        df_res_with_des = df_res.loc[~df_res['description'].isna()]
-        price_range = 2.5
-
-        for price in miss_des_unique_price:
-            df_match = df_res_with_des.loc[(df_res_with_des['price']>=(price-price_range)) & (df_res_with_des['price']<=(price+price_range))]
-            # print(price, df_match.shape[0])
-            if df_match.shape[0]>0:
-                mode_val = df_match['description'].mode()[0]
-                self.miss_des_dict[price] = mode_val
-
-        
-        # Step3: Imputing missing values in 'description'
-        # df_res['description'] = df_res[['description', 'price']].apply(lambda x: self.impute_res_description(x[1]) if x[0]=='' or (isinstance(x[0], float) and np.isnan(x[0])) else x[0], axis=1)   
-        df_res['description'] = df_res[['description', 'price']].apply(lambda x: self.impute_res_description(x.iloc[1]) if pd.isna(x.iloc[0]) else x.iloc[0], axis=1)   
-
-        return  df_res
+        except Exception as e:
+            custom_exception = CustomException(e, sys)
+            print(custom_exception)
 
 
 
@@ -136,20 +154,25 @@ class DataCleaning:
         - Using learnt mapping, imputes the missing values in 'description' with the most frequently occuring resource for the same price
         '''
 
-        df_res = df_inp.copy()
+        try:
+            df_res = df_inp.copy()
 
-        # If price is less than $1, then cap it to $1
-        df_res.loc[df_res['price']<1, 'price'] = 1
+            # If price is less than $1, then cap it to $1
+            df_res.loc[df_res['price']<1, 'price'] = 1
+                
+            # Drop Duplicates
+            df_res.drop_duplicates(inplace=True)
             
-        # Drop Duplicates
-        df_res.drop_duplicates(inplace=True)
-        
-        # Fixing missing values in 'description'        
-        # Step1: Imputing missing values in 'description'
-        # df_res['description'] = df_res[['description', 'price']].apply(lambda x: self.miss_des_dict[x[1]] if pd.isna(x[0]) else x[0], axis=1)  
-        df_res['description'] = df_res[['description', 'price']].apply(lambda x: self.impute_res_description(x.iloc[1]) if pd.isna(x.iloc[0]) else x.iloc[0], axis=1)    
+            # Fixing missing values in 'description'        
+            # Step1: Imputing missing values in 'description'
+            # df_res['description'] = df_res[['description', 'price']].apply(lambda x: self.miss_des_dict[x[1]] if pd.isna(x[0]) else x[0], axis=1)  
+            df_res['description'] = df_res[['description', 'price']].apply(lambda x: self.impute_res_description(x.iloc[1]) if pd.isna(x.iloc[0]) else x.iloc[0], axis=1)    
 
-        return  df_res
+            return  df_res
+        
+        except Exception as e:
+            custom_exception = CustomException(e, sys)
+            print(custom_exception)
 
 
 
@@ -236,6 +259,9 @@ if __name__=='__main__':
     # print('Show missing columns:')
     # print(test_res_df.isna().sum())
     # print('-'*print_sep_len)
+
+
+    # print(train_res_df['price'].min(), test_res_df['price'].min())
 
 
 
