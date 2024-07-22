@@ -9,6 +9,7 @@ textblob
 nltk
 wordcloud
 distance
+python-Levenshtein
 fuzzywuzzy
 tqdm
 scikit-learn
