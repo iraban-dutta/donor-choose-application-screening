@@ -16,7 +16,6 @@ tqdm.pandas()
 
 
 
-
 class FeatureEngineeringNLPBasic3:
 
     def __init__(self):
@@ -281,8 +280,6 @@ class FeatureEngineeringNLPBasic3:
 
 
 
-
-
     def gen_nlp_basic_res_sum_feats(self, df_inp:pd.DataFrame, fit=0, test_mode=0):
         
         '''
@@ -386,7 +383,7 @@ class FeatureEngineeringNLPBasic3:
 
 if __name__=='__main__':
 
-    print('Feature Engineering NLP-Basic started: Project Resource Summary!')
+    print('Feature Engineering NLP-Basic testing started: Project Resource Summary!')
 
     # print_sep_len = 100
 
