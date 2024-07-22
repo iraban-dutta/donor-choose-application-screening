@@ -164,9 +164,9 @@ if __name__=='__main__':
 
     print('Data Cleaning testing started')
 
-    print_sep_len = 100
-    ingest_obj = DataIngest()
-    train_pt, test_pt, train_res_pt, test_res_pt = ingest_obj.start_data_ingestion_from_csv(sample_size=1, test_size=0.25, random_state=42)
+    # print_sep_len = 100
+    # ingest_obj = DataIngest()
+    # train_pt, test_pt, train_res_pt, test_res_pt = ingest_obj.start_data_ingestion_from_csv(sample_size=1, test_size=0.25, random_state=42)
 
     # train_df = pd.read_csv(train_pt)
     # test_df = pd.read_csv(test_pt)
@@ -201,49 +201,49 @@ if __name__=='__main__':
     # print('-'*print_sep_len)
 
 
-    train_res_df = pd.read_csv(train_res_pt)
-    test_res_df = pd.read_csv(test_res_pt)
-    print(train_res_df.shape, test_res_df.shape)
+    # train_res_df = pd.read_csv(train_res_pt)
+    # test_res_df = pd.read_csv(test_res_pt)
+    # print(train_res_df.shape, test_res_df.shape)
 
 
-    # Test Methods: clean_res_fit_transform, clean_res_transform
-    print('Show all columns in dataframe:')
-    print(train_res_df.columns)
-    print('-'*print_sep_len)
-    print('Show missing columns:')
-    print(train_res_df.isna().sum())
-    print('-'*print_sep_len)
+    # # Test Methods: clean_res_fit_transform, clean_res_transform
+    # print('Show all columns in dataframe:')
+    # print(train_res_df.columns)
+    # print('-'*print_sep_len)
+    # print('Show missing columns:')
+    # print(train_res_df.isna().sum())
+    # print('-'*print_sep_len)
 
 
-    print('Show all columns in dataframe:')
-    print(test_res_df.columns)
-    print('-'*print_sep_len)
-    print('Show missing columns:')
-    print(test_res_df.isna().sum())
-    print('-'*print_sep_len)
+    # print('Show all columns in dataframe:')
+    # print(test_res_df.columns)
+    # print('-'*print_sep_len)
+    # print('Show missing columns:')
+    # print(test_res_df.isna().sum())
+    # print('-'*print_sep_len)
 
-    data_clean_obj = DataCleaning()
-    train_res_df = data_clean_obj.clean_res(df_inp=train_res_df, fit=1)
-    test_res_df = data_clean_obj.clean_res(df_inp=test_res_df, fit=0)
-
-
-    print('Show all columns in dataframe:')
-    print(train_res_df.columns)
-    print('-'*print_sep_len)
-    print('Show missing columns:')
-    print(train_res_df.isna().sum())
-    print('-'*print_sep_len)
+    # data_clean_obj = DataCleaning()
+    # train_res_df = data_clean_obj.clean_res(df_inp=train_res_df, fit=1)
+    # test_res_df = data_clean_obj.clean_res(df_inp=test_res_df, fit=0)
 
 
-    print('Show all columns in dataframe:')
-    print(test_res_df.columns)
-    print('-'*print_sep_len)
-    print('Show missing columns:')
-    print(test_res_df.isna().sum())
-    print('-'*print_sep_len)
+    # print('Show all columns in dataframe:')
+    # print(train_res_df.columns)
+    # print('-'*print_sep_len)
+    # print('Show missing columns:')
+    # print(train_res_df.isna().sum())
+    # print('-'*print_sep_len)
 
 
-    print(train_res_df['price'].min(), test_res_df['price'].min())
+    # print('Show all columns in dataframe:')
+    # print(test_res_df.columns)
+    # print('-'*print_sep_len)
+    # print('Show missing columns:')
+    # print(test_res_df.isna().sum())
+    # print('-'*print_sep_len)
+
+
+    # print(train_res_df['price'].min(), test_res_df['price'].min())
 
 
 
