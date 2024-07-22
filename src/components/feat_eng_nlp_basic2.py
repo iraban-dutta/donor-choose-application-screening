@@ -519,7 +519,7 @@ class FeatureEngineeringNLPBasic2:
 
 if __name__=='__main__':
 
-    print('Feature Engineering NLP-Basic started: Project Essay!')
+    print('Feature Engineering NLP-Basic testing started: Project Essay!')
 
     # print_sep_len = 100
 
