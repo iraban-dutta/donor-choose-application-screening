@@ -88,9 +88,11 @@ class DataPreProcessing:
             other_cols = []
 
             for col in df.columns:
-                if df[col].dtype=='object':
+                col_dtype = df[col].dtype
+                if col_dtype=='object':
                     cat_cols.append(col)
-                elif df[col].dtype=='int' or df[col].dtype=='float':
+                elif pd.api.types.is_integer_dtype(col_dtype) or pd.api.types.is_float_dtype(col_dtype):
+                # elif df[col].dtype=='int' or df[col].dtype=='float':
                     num_cols.append(col)
                 else:
                     other_cols.append(col)
@@ -98,6 +100,14 @@ class DataPreProcessing:
             print(f'Categorical columns length: {len(cat_cols)}')
             print(f'Numerical columns length: {len(num_cols)}')
             print(f'Other columns length: {len(other_cols)}')
+
+            # print(cat_cols)
+            # print('-'*50)
+            # print(other_cols)
+            # print('-'*50)
+            # print(num_cols)
+            # print('-'*50)
+
         
             return cat_cols, num_cols, other_cols
 
