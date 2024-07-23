@@ -23,8 +23,9 @@ from src.components.model_trainer import ModelTrainer
 
 class TrainPipeline:
 
-    def __init__(self, sample_size=0.15, test_size=0.25, random_state=42):
+    def __init__(self, sample_n=5000, sample_size :float=None, test_size=0.25, random_state=42):
 
+        self.sample_n = sample_n
         self.sample_size = sample_size
         self.test_size = test_size
         self.random_state = random_state
@@ -85,7 +86,8 @@ class TrainPipeline:
             print('-'*print_sep_len)
 
             ingest_obj = DataIngest()
-            train_pt, test_pt, train_res_pt, test_res_pt = ingest_obj.start_data_ingestion_from_csv(sample_size=self.sample_size, 
+            train_pt, test_pt, train_res_pt, test_res_pt = ingest_obj.start_data_ingestion_from_csv(sample_n=self.sample_n, 
+                                                                                                    sample_size=self.sample_size, 
                                                                                                     test_size=self.test_size, 
                                                                                                     random_state=self.random_state)
             
@@ -315,12 +317,21 @@ if __name__=='__main__':
 
     print('Train Pipeline testing started')
 
-    train_pipe1 = TrainPipeline(sample_size=0.05, test_size=0.25, random_state=42)
+    # train_pipe0 = TrainPipeline(sample_size=1, test_size=0.3, random_state=42)
+    # # Only save data post FE
+    # train_pipe0.train_model_from_scratch(save_data_post_feat_eng=1, model_train=0)
+
+
+    # train_pipe1 = TrainPipeline(sample_n=5000, test_size=0.25, random_state=42)
+    # Only save data post FE
     # train_pipe1.train_model_from_scratch(save_data_post_feat_eng=1, model_train=0)
+    # Save data post FE and train model
+    # train_pipe1.train_model_from_scratch(save_data_post_feat_eng=1, model_train=1)
 
 
     modeltrainer_obj = ModelTrainer()
     modeltrainer_obj.train_model(train_df=None, test_df=None, sample_size=1, read_presaved_data=1)
+
 
 
     
