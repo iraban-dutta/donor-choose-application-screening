@@ -17,7 +17,7 @@ class DataIngest:
         self.test_data_res_path = os.path.join('artifacts', 'test_res.csv')
         
 
-    def start_data_ingestion_from_csv(self, sample_size=0.15, test_size=0.25, random_state=42):
+    def start_data_ingestion_from_csv(self, sample_n=5000, sample_size :float=None, test_size=0.25, random_state=42):
         '''
         This function performs the following 2 tasks:
         - reads the csv files into dataframes
@@ -31,8 +31,10 @@ class DataIngest:
 
             
             # Sampling data
-            sample_row_count = int(sample_size*data.shape[0])
-            data_sample = data.sample(n=sample_row_count, random_state=random_state)
+            if sample_size:
+                data_sample = data.sample(frac=sample_size, random_state=random_state)
+            else:
+                data_sample = data.sample(n=sample_n, random_state=random_state)
 
 
             # Creating train-test split for data
