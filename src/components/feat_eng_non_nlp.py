@@ -148,7 +148,7 @@ class FeatureEngineeringNonNLP:
             
             
             # Binning res_exp_item_q
-            df_res_agg['res_exp_item_qcat'] = pd.cut(df_res_agg['res_exp_item_q'], bins=[0, 1, 4, 100], labels=['Zero', 'Upto3', 'Above3'], right=False)
+            df_res_agg['res_exp_item_qcat'] = pd.cut(df_res_agg['res_exp_item_q'], bins=[0, 1, 4, 100], labels=['Zero', 'Upto3', 'Above3'], right=False).astype('str')
             
             # Applying log transformation on res_item_q, res_item_uniq_q, res_price
             df_res_agg['res_item_q_ln'] = np.log(df_res_agg['res_item_q'])
