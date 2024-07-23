@@ -3,6 +3,7 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
@@ -19,18 +20,18 @@ class ModelTrainer:
         pass
 
 
-    # def get_cross_val_score_summary(self, model, X_train, y_train, cv=5, scoring='accuracy'):
+    def get_cross_val_score_summary(self, model, X_train, y_train, cv=5, scoring='accuracy'):
         
-    #     try:
-    #         cross_val = cross_val_score(model, X_train, y_train, cv=cv, scoring=scoring)
-    #         print('-'*70)
-    #         print(f'Cross validation Score Summary: #Folds:{cv}, Score:{scoring}')
-    #         print('-'*70)
-    #         print(pd.Series(cross_val).describe())
+        try:
+            cross_val = cross_val_score(model, X_train, y_train, cv=cv, scoring=scoring)
+            print('-'*70)
+            print(f'Cross validation Score Summary: #Folds:{cv}, Score:{scoring}')
+            print('-'*70)
+            print(pd.Series(cross_val).describe())
 
-    #     except Exception as e:
-    #         custom_exception = CustomException(e, sys)
-    #         print(custom_exception)  
+        except Exception as e:
+            custom_exception = CustomException(e, sys)
+            print(custom_exception)  
 
 
     def get_classification_report(self, model, df_train, X_train, y_train, X_test, y_test):
@@ -121,14 +122,23 @@ class ModelTrainer:
 
             print(train_final_df.shape, test_final_df.shape)
             print('-'*print_sep_len)
+
+            if train_final_df.shape[1]!=test_final_df.shape[1]:
+                print('Column Mismatch b/w train and test data')
+                for col in train_final_df.columns:
+                    if col not in test_final_df.columns:
+                        print(col)
+                print('-'*print_sep_len)
+
+
             print('Missing values:')
             print(train_final_df.isna().sum().loc[train_final_df.isna().sum()>0])
             print(test_final_df.isna().sum().loc[test_final_df.isna().sum()>0])
             print('-'*print_sep_len)
 
 
-            train_final_df_sample = train_final_df.sample(frac=sample_size)
-            test_final_df_sample = test_final_df.sample(frac=sample_size)
+            train_final_df_sample = train_final_df.sample(frac=sample_size, random_state=42)
+            test_final_df_sample = test_final_df.sample(frac=sample_size, random_state=42)
 
             X_train = train_final_df_sample.drop(['id', 'project_is_approved'], axis=1).copy()
             X_test = test_final_df_sample.drop(['id', 'project_is_approved'], axis=1).copy()
@@ -157,10 +167,12 @@ class ModelTrainer:
             # cat_cols, num_cols, other_cols = data_preprocess_obj4.split_cols_cat_num(X_train_c2n)
             # print('Post Cat2Num Transformation')
             # print(cat_cols)
+            # print('-'*print_sep_len)
 
             # cat_cols, num_cols, other_cols = data_preprocess_obj4.split_cols_cat_num(X_test_c2n)
             # print('Post Cat2Num Transformation')
             # print(cat_cols)
+            # print('-'*print_sep_len)
 
             print('Cat2Num Transformation end')
             print('-'*print_sep_len)
@@ -176,17 +188,19 @@ class ModelTrainer:
             print('Feature Scaling end')
             print('-'*print_sep_len)
      
+            # Model Training & Evaluation:
+            # xgbc = xgb.XGBClassifier()
 
-            # Model Training & Evaluation: TBD
             xgbc = xgb.XGBClassifier(objective= 'binary:logistic', 
-                                     n_estimators= 500, 
-                                     max_depth= 2, 
-                                     learning_rate= 0.1, 
-                                     gamma= 0.25, 
-                                     subsample= 0.7, 
-                                     colsample_bytree= 0.9, 
+                                     n_estimators=400, 
+                                     max_depth=4, 
+                                     learning_rate=0.1, 
+                                     gamma=0.25, 
+                                     subsample=0.7, 
+                                     colsample_bytree=0.5, 
                                      random_state=42)
 
+            # self.get_cross_val_score_summary(model=xgbc, X_train=X_train_scl, y_train=y_train, cv=5, scoring='accuracy')
 
             xgbc_metrics_arr = self.get_classification_report(model=xgbc, df_train=X_train, 
                                                               X_train=X_train_scl, y_train=y_train, 
