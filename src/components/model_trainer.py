@@ -2,14 +2,10 @@ import sys
 import os
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.model_selection import cross_val_score
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
-from sklearn.metrics import classification_report
-from sklearn.metrics import confusion_matrix
 import xgboost as xgb
 from src.exception import CustomException
 from src.components.data_preprocessing import DataPreProcessing
+from src.utils import get_cross_val_score_summary, get_classification_report, save_object, load_object
 
 
 
@@ -17,79 +13,81 @@ from src.components.data_preprocessing import DataPreProcessing
 class ModelTrainer:
 
     def __init__(self):
-        pass
+
+        self.trained_model_path = os.path.join('artifacts', 'model.pkl')
 
 
-    def get_cross_val_score_summary(self, model, X_train, y_train, cv=5, scoring='accuracy'):
+
+    # def get_cross_val_score_summary(self, model, X_train, y_train, cv=5, scoring='accuracy'):
         
-        try:
-            cross_val = cross_val_score(model, X_train, y_train, cv=cv, scoring=scoring)
-            print('-'*70)
-            print(f'Cross validation Score Summary: #Folds:{cv}, Score:{scoring}')
-            print('-'*70)
-            print(pd.Series(cross_val).describe())
+    #     try:
+    #         cross_val = cross_val_score(model, X_train, y_train, cv=cv, scoring=scoring)
+    #         print('-'*70)
+    #         print(f'Cross validation Score Summary: #Folds:{cv}, Score:{scoring}')
+    #         print('-'*70)
+    #         print(pd.Series(cross_val).describe())
 
-        except Exception as e:
-            custom_exception = CustomException(e, sys)
-            print(custom_exception)  
+    #     except Exception as e:
+    #         custom_exception = CustomException(e, sys)
+    #         print(custom_exception)  
 
 
-    def get_classification_report(self, model, df_train, X_train, y_train, X_test, y_test):
+    # def get_classification_report(self, model, df_train, X_train, y_train, X_test, y_test):
         
-        try: 
-            # Fitting model
-            model.fit(X_train, y_train)
-            print('Fitting model completed!')
+    #     try: 
+    #         # Fitting model
+    #         model.fit(X_train, y_train)
+    #         print('Fitting model completed!')
             
-            # Generate model metrics
-            print('-'*70)
-            print(f'Classification Report: Model:{type(model).__name__}')
-            print('-'*70)
-            y_pred = model.predict(X_test)
-            y_proba = model.predict_proba(X_test)[:, -1]
-            train_acc = model.score(X_train, y_train)
-            test_acc = model.score(X_test, y_test)
-            roc_auc = roc_auc_score(y_test, y_proba)
+    #         # Generate model metrics
+    #         print('-'*70)
+    #         print(f'Classification Report: Model:{type(model).__name__}')
+    #         print('-'*70)
+    #         y_pred = model.predict(X_test)
+    #         y_proba = model.predict_proba(X_test)[:, -1]
+    #         train_acc = model.score(X_train, y_train)
+    #         test_acc = model.score(X_test, y_test)
+    #         roc_auc = roc_auc_score(y_test, y_proba)
 
-            precision_0 = precision_score(y_test, y_pred, pos_label=0)
-            recall_0 = recall_score(y_test, y_pred, pos_label=0)
-            f1_0 = f1_score(y_test, y_pred, pos_label=0)
-            precision_1 = precision_score(y_test, y_pred, pos_label=1)
-            recall_1 = recall_score(y_test, y_pred, pos_label=1)
-            f1_1 = f1_score(y_test, y_pred, pos_label=1)
+    #         precision_0 = precision_score(y_test, y_pred, pos_label=0)
+    #         recall_0 = recall_score(y_test, y_pred, pos_label=0)
+    #         f1_0 = f1_score(y_test, y_pred, pos_label=0)
+    #         precision_1 = precision_score(y_test, y_pred, pos_label=1)
+    #         recall_1 = recall_score(y_test, y_pred, pos_label=1)
+    #         f1_1 = f1_score(y_test, y_pred, pos_label=1)
             
-            metrics_arr = np.array([train_acc, test_acc, roc_auc, precision_0, recall_0, f1_0, precision_1, recall_1, f1_1])
-            
-            
-            print("Train accuracy:", train_acc)
-            print("Test accuracy:", test_acc)
-            print("ROC-AUC score: ", roc_auc)
-            print('-'*50)
-            print(classification_report(y_test, y_pred))
-            print('-'*50)
-            print('Confusion Matrix on Test Set:')
-            print(confusion_matrix(y_test, y_pred))
-            print('-'*50)
+    #         metrics_arr = np.array([train_acc, test_acc, roc_auc, precision_0, recall_0, f1_0, precision_1, recall_1, f1_1])
             
             
-            # Get feature importances
-            ser_feat_imp= pd.Series(dict(zip(df_train.columns, model.feature_importances_))).sort_values(ascending=False)
-            print('Top-10 important features:')
-            print(ser_feat_imp.iloc[:10])
-            print('-'*50)
+    #         print("Train accuracy:", train_acc)
+    #         print("Test accuracy:", test_acc)
+    #         print("ROC-AUC score: ", roc_auc)
+    #         print('-'*50)
+    #         print(classification_report(y_test, y_pred))
+    #         print('-'*50)
+    #         print('Confusion Matrix on Test Set:')
+    #         print(confusion_matrix(y_test, y_pred))
+    #         print('-'*50)
             
-            # # Plot feature importances (Top-k)
-            # k = 50
-            # plt.figure(figsize=(20, 4))
-            # plt.bar(ser_feat_imp.iloc[:k].index, ser_feat_imp.iloc[:k].values)
-            # plt.xticks(rotation=90)
-            # plt.show()
             
-            return metrics_arr
+    #         # Get feature importances
+    #         ser_feat_imp= pd.Series(dict(zip(df_train.columns, model.feature_importances_))).sort_values(ascending=False)
+    #         print('Top-10 important features:')
+    #         print(ser_feat_imp.iloc[:10])
+    #         print('-'*50)
+            
+    #         # # Plot feature importances (Top-k)
+    #         # k = 50
+    #         # plt.figure(figsize=(20, 4))
+    #         # plt.bar(ser_feat_imp.iloc[:k].index, ser_feat_imp.iloc[:k].values)
+    #         # plt.xticks(rotation=90)
+    #         # plt.show()
+            
+    #         return metrics_arr
         
-        except Exception as e:
-            custom_exception = CustomException(e, sys)
-            print(custom_exception) 
+    #     except Exception as e:
+    #         custom_exception = CustomException(e, sys)
+    #         print(custom_exception) 
 
 
 
@@ -200,11 +198,32 @@ class ModelTrainer:
                                      colsample_bytree=0.5, 
                                      random_state=42)
 
-            # self.get_cross_val_score_summary(model=xgbc, X_train=X_train_scl, y_train=y_train, cv=5, scoring='accuracy')
+            # get_cross_val_score_summary(model=xgbc, X_train=X_train_scl, y_train=y_train, cv=5, scoring='accuracy')
 
-            xgbc_metrics_arr = self.get_classification_report(model=xgbc, df_train=X_train, 
-                                                              X_train=X_train_scl, y_train=y_train, 
-                                                              X_test=X_test_scl, y_test=y_test)
+            xgbc_metrics_arr = get_classification_report(model=xgbc, df_train=X_train, 
+                                                         X_train=X_train_scl, y_train=y_train, 
+                                                         X_test=X_test_scl, y_test=y_test)
+            
+
+            # Saving model as pickle file
+            save_object(file_path=self.trained_model_path, obj=xgbc)
+            print('Model Saved')
+            print('-'*print_sep_len)
+
+            
+            # Loading model frm pickle file
+            trained_model = load_object(file_path='artifacts/model.pkl')
+            print('Model Loaded')
+            print('-'*print_sep_len)
+
+            print(X_test_scl.shape)
+            print(X_test_scl[0].reshape(1, -1).shape)
+
+            print('True Label:', y_test[0])
+            print('Prediction:', xgbc.predict(X_test_scl[0].reshape(1, -1)))
+            print('Prediction with saved model:', trained_model.predict(X_test_scl[0].reshape(1, -1)))
+
+
 
         except Exception as e:
             custom_exception = CustomException(e, sys)
