@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Approval Prediction App</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Donor Choose Project Approval Prediction</h1>
+
+    <!-- Display result -->
+    <div class="message {{ message_class }}">
+        {{ message|safe }}
+    </div>
+
+    <form action="/predict" method="post">
+        <label for="teacher_prefix">Teacher Prefix:</label>
+        <select id="teacher_prefix" name="teacher_prefix" required>
+            <option value="" disabled selected>Select Teacher Prefix</option>
+            <option value="Mrs.">Mrs.</option>
+            <option value="Ms.">Ms.</option>
+            <option value="Mr.">Mr.</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+        </select><br>
+
+        <label for="school_state">School State:</label>
+        <select id="school_state" name="school_state" required>
+            <option value="" disabled selected>Select School State</option>
+            <option value="CA">CA</option>
+            <option value="TX">TX</option>
+            <option value="NY">NY</option>
+            <option value="FL">FL</option>
+            <option value="NC">NC</option>
+            <option value="IL">IL</option>
+            <option value="GA">GA</option>
+            <option value="SC">SC</option>
+            <option value="MI">MI</option>
+            <option value="PA">PA</option>
+            <!-- 
+            <option value="IN">IN</option>
+            <option value="MO">MO</option>
+            <option value="OH">OH</option>
+            <option value="MA">MA</option>
+            <option value="LA">LA</option>
+            <option value="WA">WA</option>
+            <option value="OK">OK</option>
+            <option value="NJ">NJ</option>
+            <option value="AZ">AZ</option>
+            <option value="VA">VA</option>
+            <option value="WI">WI</option>
+            <option value="UT">UT</option>
+            <option value="AL">AL</option>
+            <option value="TN">TN</option>
+            <option value="CT">CT</option>
+            <option value="MD">MD</option>
+            <option value="NV">NV</option>
+            <option value="MS">MS</option>
+            <option value="KY">KY</option>
+            <option value="OR">OR</option>
+            <option value="MN">MN</option>
+            <option value="CO">CO</option>
+            <option value="AR">AR</option>
+            <option value="ID">ID</option>
+            <option value="IA">IA</option>
+            <option value="KS">KS</option>
+            <option value="NM">NM</option>
+            <option value="WV">WV</option>
+            <option value="ME">ME</option>
+            <option value="DC">DC</option>
+            <option value="HI">HI</option>
+            <option value="NH">NH</option>
+            <option value="DE">DE</option>
+            <option value="AK">AK</option>
+            <option value="NE">NE</option>
+            <option value="SD">SD</option>
+            <option value="RI">RI</option>
+            <option value="MT">MT</option>
+            <option value="ND">ND</option>
+            <option value="WY">WY</option>
+            <option value="VT">VT</option> 
+            -->
+        </select><br>
+
+        <label for="project_grade_category">Project Grade Category:</label>
+        <select id="project_grade_category" name="project_grade_category" required>
+            <option value="" disabled selected>Select Project Grade Category</option>
+            <option value="Grades PreK-2">Grades PreK-2</option>
+            <option value="Grades 3-5">Grades 3-5</option>
+            <option value="Grades 6-8">Grades 6-8</option>
+            <option value="Grades 9-12">Grades 9-12</option>
+        </select><br>
+
+        <label for="project_subject_categories">Project Subject Categories:</label>
+        <select id="project_subject_categories" name="project_subject_categories[]" multiple required>
+            <!-- <option value="" disabled>Select Project Subject Categories (Ctrl+click for multiple)</option> -->
+            <option value="" disabled selected>Select Project Subject Categories (Ctrl+click for multiple)</option>
+            <option value="Literacy & Language">Literacy & Language</option>
+            <option value="Math & Science">Math & Science</option>
+            <option value="Health & Sports">Health & Sports</option>
+            <option value="Special Needs">Special Needs</option>
+            <option value="Applied Learning">Applied Learning</option>
+            <option value="Music & The Arts">Music & The Arts</option>
+            <option value="History & Civics">History & Civics</option>
+            <option value="Warmth, Care & Hunger">Warmth, Care & Hunger</option>
+        </select><br>
+
+        <label for="project_title">Project Title:</label>
+        <input type="text" id="project_title" name="project_title" placeholder="Enter Project Title" required><br>
+
+        <label for="project_essay_1">Project Essay 1:</label>
+        <textarea id="project_essay_1" name="project_essay_1" placeholder="Enter Project Essay 1" required></textarea><br>
+
+        <label for="project_essay_2">Project Essay 2:</label>
+        <textarea id="project_essay_2" name="project_essay_2" placeholder="Enter Project Essay 2" required></textarea><br>
+
+        <label for="project_resource_summary">Project Resource Summary:</label>
+        <textarea id="project_resource_summary" name="project_resource_summary" placeholder="Enter Project Resource Summary" required></textarea><br>
+
+        <div id="resources">
+            <h2>Resources</h2>
+            <div class="resource">
+                <label for="resource_description">Resource Description:</label>
+                <input type="text" name="resource_description[]" placeholder="Enter Resource Description" required><br>
+
+                <label for="resource_quantity">Resource Quantity:</label>
+                <input type="number" name="resource_quantity[]" placeholder="Enter Resource Quantity (e.g., 24)" required><br>
+
+                <label for="resource_price">Resource Price:</label>
+                <input type="number" name="resource_price[]" step="0.01" placeholder="Enter Resource Price (e.g., 5.4)" required><br>
+            </div>
+        </div>
+
+        <button type="button" onclick="addResource()">Add Another Resource</button><br>
+
+        <div class="button-container">
+            <input type="submit" value="Predict Project Approval">
+        </div>
+
+    </form>
+
+    <script>
+        function addResource() {
+            const resourcesDiv = document.getElementById('resources');
+            const newResourceDiv = document.createElement('div');
+            newResourceDiv.className = 'resource';
+            newResourceDiv.innerHTML = `
+                <label for="resource_description">Resource Description:</label>
+                <input type="text" name="resource_description[]" placeholder="Enter Resource Description" required><br>
+
+                <label for="resource_quantity">Resource Quantity:</label>
+                <input type="number" name="resource_quantity[]" placeholder="Enter Resource Quantity (e.g., 24)" required><br>
+
+                <label for="resource_price">Resource Price:</label>
+                <input type="number" name="resource_price[]" step="0.01" placeholder="Enter Resource Price (e.g., 5.4)" required><br>
+            `;
+            resourcesDiv.appendChild(newResourceDiv);
+        }
+    </script>
+
+    <!-- Display result using jinja template-->
+    {% if result %}
+        <p>{{ result }}</p>
+    {% endif %}
+
+</body>
+</html>
