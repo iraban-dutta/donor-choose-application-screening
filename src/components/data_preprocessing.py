@@ -126,7 +126,7 @@ class DataPreProcessing:
             for col in tar_cols:
                 tar_enc_dict[col] = TargetEncoder()
                 df_train[col] = tar_enc_dict[col].fit_transform(df_train[col], y_train)
-                df_test[col] = tar_enc_dict[col].transform(df_test[col], y_test)
+                df_test[col] = tar_enc_dict[col].transform(df_test[col])
                 
 
             lab_enc_dict = {}
@@ -135,7 +135,7 @@ class DataPreProcessing:
                 df_train[col] = lab_enc_dict[col].fit_transform(df_train[col])
                 df_test[col] = lab_enc_dict[col].transform(df_test[col])
 
-            return df_train, df_test
+            return df_train, df_test, tar_enc_dict, lab_enc_dict
         
         except Exception as e:
             custom_exception = CustomException(e, sys)
@@ -150,7 +150,7 @@ class DataPreProcessing:
         X_train_scl = std_scaler.fit_transform(X_train)
         X_test_scl = std_scaler.transform(X_test)
 
-        return X_train_scl, X_test_scl
+        return X_train_scl, X_test_scl, std_scaler
 
 
 
