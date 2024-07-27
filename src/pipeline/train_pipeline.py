@@ -2,11 +2,6 @@ import sys
 import os
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
-from sklearn.metrics import classification_report
-from sklearn.metrics import confusion_matrix
-import xgboost as xgb
 from src.exception import CustomException
 from src.components.data_ingestion import DataIngest
 from src.components.data_cleaning import DataCleaning
@@ -17,6 +12,7 @@ from src.components.feat_eng_nlp_basic3 import FeatureEngineeringNLPBasic3
 from src.components.feat_eng_nlp_w2v import FeatureEngineeringNLPW2V
 from src.components.data_preprocessing import DataPreProcessing
 from src.components.model_trainer import ModelTrainer
+from src.utils import save_object, load_object
 
 
 
@@ -56,6 +52,21 @@ class TrainPipeline:
 
         self.train_final_df_path = os.path.join('artifacts', 'data_post_feat_eng', 'train_final.csv')
         self.test_final_df_path = os.path.join('artifacts', 'data_post_feat_eng', 'test_final.csv')
+
+
+        self.non_nlp_obj_path = os.path.join('artifacts', 'non_nlp_obj.pkl') 
+
+        self.nlp_basic_obj_title_path = os.path.join('artifacts', 'nlp_basic_obj_title.pkl')
+        self.nlp_basic_obj_ess1_path = os.path.join('artifacts', 'nlp_basic_obj_ess1.pkl')
+        self.nlp_basic_obj_ess2_path = os.path.join('artifacts', 'nlp_basic_obj_ess2.pkl')
+        self.nlp_basic_obj_ess_sim_path = os.path.join('artifacts', 'nlp_basic_obj_ess_sim.pkl')
+        self.nlp_basic_obj_res_sum_path = os.path.join('artifacts', 'nlp_basic_obj_res_sum.pkl')
+
+        self.gensim_w2v_title_path = os.path.join('artifacts', 'gensim_w2v_title.pkl')
+        self.gensim_w2v_ess1_path = os.path.join('artifacts', 'gensim_w2v_ess1.pkl')
+        self.gensim_w2v_ess2_path = os.path.join('artifacts', 'gensim_w2v_ess2.pkl')
+        self.gensim_w2v_res_sum_path = os.path.join('artifacts', 'gensim_w2v_res_sum.pkl')
+
 
 
 
@@ -234,7 +245,6 @@ class TrainPipeline:
             test_final_df = data_preprocess_obj3.merge_all_feats(df_non_nlp=test_non_nlp_df, df_nlp_basic=test_nlp_basic_df, df_nlp_w2v=test_nlp_w2v_df)
 
 
-
             # # Sanity checks on data
             # print(train_non_nlp_df.shape)
             # print(train_non_nlp_df.columns)
@@ -261,7 +271,6 @@ class TrainPipeline:
             # print(test_final_df.columns)
             # print('-'*print_sep_len)
 
-
             # print('Missing values:')
             # print(train_non_nlp_df.isna().sum().loc[train_non_nlp_df.isna().sum()>0])
             # print(test_non_nlp_df.isna().sum().loc[test_non_nlp_df.isna().sum()>0])
@@ -274,6 +283,51 @@ class TrainPipeline:
             # print('-'*print_sep_len)
 
 
+            # Save fitted objects for feature engineering
+            save_object(file_path=self.non_nlp_obj_path, obj=fe_non_nlp_obj)
+
+            save_object(file_path=self.nlp_basic_obj_title_path, obj=fe_nlp_basic_title_obj)
+            save_object(file_path=self.nlp_basic_obj_ess1_path, obj=fe_nlp_basic_ess1_obj)
+            save_object(file_path=self.nlp_basic_obj_ess2_path, obj=fe_nlp_basic_ess2_obj)
+            save_object(file_path=self.nlp_basic_obj_res_sum_path, obj=fe_nlp_basic_res_sum_obj)
+        
+            save_object(file_path=self.gensim_w2v_title_path, obj=fe_nlp_w2v_title_obj)
+            save_object(file_path=self.gensim_w2v_ess1_path, obj=fe_nlp_w2v_ess1_obj)
+            save_object(file_path=self.gensim_w2v_ess2_path, obj=fe_nlp_w2v_ess2_obj)
+            save_object(file_path=self.gensim_w2v_res_sum_path, obj=fe_nlp_w2v_res_sum_obj)
+
+
+
+            # # Testing saved objects for preprocessing: 
+            # ld_obj1 = load_object(file_path='artifacts/non_nlp_obj.pkl')
+            # ld_obj2 = load_object(file_path='artifacts/nlp_basic_obj_title.pkl')
+            # ld_obj3 = load_object(file_path='artifacts/nlp_basic_obj_ess1.pkl')
+            # ld_obj4 = load_object(file_path='artifacts/nlp_basic_obj_ess2.pkl')
+            # ld_obj5 = load_object(file_path='artifacts/nlp_basic_obj_res_sum.pkl')
+            # ld_obj6 = load_object(file_path='artifacts/gensim_w2v_title.pkl')
+            # ld_obj7 = load_object(file_path='artifacts/gensim_w2v_ess1.pkl')
+            # ld_obj8 = load_object(file_path='artifacts/gensim_w2v_ess2.pkl')
+            # ld_obj9 = load_object(file_path='artifacts/gensim_w2v_res_sum.pkl')
+
+            # print(ld_obj1.expensive_item_price_threshold)
+            # print('-'*50)
+            # print(ld_obj2.proj_title_rej_sub_pop_wrds.iloc[:10])
+            # print('-'*50)
+            # print(ld_obj3.proj_ess_rej_sub_pop_wrds.iloc[:10])
+            # print('-'*50)
+            # print(ld_obj4.proj_ess_rej_sub_pop_wrds.iloc[:10])
+            # print('-'*50)
+            # print(ld_obj5.proj_res_sum_rej_sub_pop_wrds.iloc[:10])
+            # print('-'*50)
+            # print(len(ld_obj6.model.wv.key_to_index))
+            # print('-'*50)
+            # print(len(ld_obj7.model.wv.key_to_index))
+            # print('-'*50)
+            # print(len(ld_obj8.model.wv.key_to_index))
+            # print('-'*50)
+            # print(len(ld_obj9.model.wv.key_to_index))
+
+            
 
             # Save datasets post feature engineering:
             if save_data_post_feat_eng==1:
@@ -306,6 +360,7 @@ class TrainPipeline:
                 modeltrainer_obj.train_model(train_df=train_final_df, test_df=test_final_df, sample_size=1, read_presaved_data=0)
 
 
+
         except Exception as e:
             custom_exception = CustomException(e, sys)
             print(custom_exception)  
@@ -318,19 +373,24 @@ if __name__=='__main__':
     print('Train Pipeline testing started')
 
     # train_pipe0 = TrainPipeline(sample_size=1, test_size=0.3, random_state=42)
-    # # Only save data post FE
-    # train_pipe0.train_model_from_scratch(save_data_post_feat_eng=1, model_train=0)
+    # # Save data post FE
+    # train_pipe0.train_model_from_scratch(save_data_post_feat_eng=1, model_train=1)
 
 
-    # train_pipe1 = TrainPipeline(sample_n=5000, test_size=0.25, random_state=42)
-    # Only save data post FE
-    # train_pipe1.train_model_from_scratch(save_data_post_feat_eng=1, model_train=0)
-    # Save data post FE and train model
+    # Train model on presaved data (post FE)
+    modeltrainer_obj = ModelTrainer()
+    modeltrainer_obj.train_model(train_df=None, test_df=None, sample_size=1, read_presaved_data=1)
+
+
+    # train_pipe1 = TrainPipeline(sample_n=2000, test_size=0.25, random_state=42)
+
+    # # Dont save data post FE & dont train model: Just for checking pipeline
+    # train_pipe1.train_model_from_scratch(save_data_post_feat_eng=0, model_train=0)
+
+    # # Save data post FE and train model: Save data post FE on a sample from original data and train model
     # train_pipe1.train_model_from_scratch(save_data_post_feat_eng=1, model_train=1)
 
 
-    modeltrainer_obj = ModelTrainer()
-    modeltrainer_obj.train_model(train_df=None, test_df=None, sample_size=1, read_presaved_data=1)
 
 
 
