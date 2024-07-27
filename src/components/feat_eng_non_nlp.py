@@ -10,6 +10,9 @@ class FeatureEngineeringNonNLP:
 
     def __init__(self):
         self.expensive_item_price_threshold = -100
+        self.psc_list = []
+        self.pssc_list = []
+
 
 
     def temporal_feats(self, df_inp):
@@ -61,7 +64,7 @@ class FeatureEngineeringNonNLP:
 
 
 
-    def proj_cat_feats(self, df_inp):
+    def proj_cat_feats(self, df_inp, fit=0):
 
         try:
             # project_subject_categories
@@ -71,10 +74,29 @@ class FeatureEngineeringNonNLP:
             df_psc_explode = df_psc.explode('psc')
             
             df_psc_clean = ~df_psc_explode.pivot(index='id', columns='psc').isna()
-            df_psc_clean = df_psc_clean.astype('int64')
             df_psc_clean.columns = [tup[-1] for tup in df_psc_clean.columns]
-            df_psc_clean.drop('Warmth', axis=1, inplace=True)
-            df_psc_clean.rename(columns={'Care & Hunger':'Warmth, Care & Hunger'}, inplace=True)
+
+            if fit==1:
+                self.psc_list = df_psc_clean.columns
+
+            if fit==0:
+                if len(self.psc_list) == 0:
+                    raise Exception('Object not fitted yet!')
+                
+                # If subject_category category present in test data and NOT in train data, simply ignore
+
+                # If subject_category category present in train data and NOT in test data, add the subject category with all zeros
+                for col in self.psc_list:
+                    if col not in df_psc_clean.columns:
+                        # print(f'{col} Not found in test data but present in train data')
+                        df_psc_clean[col] = np.zeros(df_psc_clean.shape[0])
+            
+            df_psc_clean = df_psc_clean.astype('int64')
+            
+            if 'Warmth' in df_psc_clean.columns:
+                df_psc_clean.drop('Warmth', axis=1, inplace=True)
+            if 'Care & Hunger' in df_psc_clean.columns:
+                df_psc_clean.rename(columns={'Care & Hunger':'Warmth, Care & Hunger'}, inplace=True)
 
             return df_psc_clean
         except Exception as e:
@@ -83,7 +105,7 @@ class FeatureEngineeringNonNLP:
 
 
 
-    def proj_subcat_feats(self, df_inp):
+    def proj_subcat_feats(self, df_inp, fit=0):
 
         try:
             # project_subject_subcategories
@@ -93,11 +115,33 @@ class FeatureEngineeringNonNLP:
             df_pssc_explode = df_pssc.explode('pssc')
             
             df_pssc_clean = ~df_pssc_explode.pivot(index='id', columns='pssc').isna()
-            df_pssc_clean = df_pssc_clean.astype('int64')
             df_pssc_clean.columns = [tup[-1] for tup in df_pssc_clean.columns]
-            df_pssc_clean.drop('Warmth', axis=1, inplace=True)
-            df_pssc_clean.rename(columns={'Care & Hunger':'Warmth, Care & Hunger'}, inplace=True)
 
+            if fit==1:
+                self.pssc_list = df_pssc_clean.columns
+
+            if fit==0:
+                if len(self.pssc_list) == 0:
+                    raise Exception('Object not fitted yet!')
+                
+                # If subject_category category present in test data and NOT in train data, simply ignore
+
+                # If subject_category category present in train data and NOT in test data, add the subject category with all zeros
+                for col in self.pssc_list:
+                    if col not in df_pssc_clean.columns:
+                        # print(f'{col} Not found in test data but present in train data')
+                        df_pssc_clean[col] = np.zeros(df_pssc_clean.shape[0])  
+        
+
+
+            df_pssc_clean = df_pssc_clean.astype('int64')
+
+            if 'Warmth' in df_pssc_clean.columns:
+                df_pssc_clean.drop('Warmth', axis=1, inplace=True)
+            if 'Care & Hunger' in df_pssc_clean.columns:
+                df_pssc_clean.rename(columns={'Care & Hunger':'Warmth, Care & Hunger'}, inplace=True)
+
+            
             return df_pssc_clean
         except Exception as e:
             custom_exception = CustomException(e, sys)
@@ -226,13 +270,22 @@ class FeatureEngineeringNonNLP:
             df = self.location_feats(df_inp=df)
             df = self.teacher_feats(df_inp=df)
 
-            df_psc = self.proj_cat_feats(df_inp=df)
-            df_pssc = self.proj_subcat_feats(df_inp=df)
+            df_psc = self.proj_cat_feats(df_inp=df, fit=fit)
+            df_pssc = self.proj_subcat_feats(df_inp=df, fit=fit)
+
+
             # Merging categories and sub-categories
             df_proj_cat_merged = pd.merge(df_psc, df_pssc, left_index=True, right_index=True, how='left').reset_index()
-            df_proj_cat_merged.drop(['Warmth, Care & Hunger_y', 'Special Needs_y'], axis=1, inplace=True)
-            df_proj_cat_merged.rename({'Warmth, Care & Hunger_x':'Warmth, Care & Hunger', 'Special Needs_x':'Special Needs'}, axis=1, inplace=True)
+            if 'Warmth, Care & Hunger_y' in df_proj_cat_merged.columns :
 
+                df_proj_cat_merged.drop(['Warmth, Care & Hunger_y'], axis=1, inplace=True)
+                df_proj_cat_merged.rename({'Warmth, Care & Hunger_x':'Warmth, Care & Hunger'}, axis=1, inplace=True)
+
+            if 'Special Needs_y' in df_proj_cat_merged.columns:
+                df_proj_cat_merged.drop(['Special Needs_y'], axis=1, inplace=True)
+                df_proj_cat_merged.rename({'Special Needs_x':'Special Needs'}, axis=1, inplace=True)
+
+            
             df.drop('project_subject_categories', axis=1, inplace=True)
             df.drop('project_subject_subcategories', axis=1, inplace=True)
 
