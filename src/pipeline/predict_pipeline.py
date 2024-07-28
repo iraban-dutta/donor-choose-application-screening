@@ -47,17 +47,29 @@ class UserInputCompileProjectData:
 
             df_dict = {
 
+                # # Hard-coded Features: Debug Mode
+                # 'Unnamed: 0' : 103020,
+                # 'id': 'p092944',
+                # 'teacher_id': '87bc1584ca9d5bfe79365c5427a0bc14',
+                # 'teacher_number_of_previously_posted_projects': 1,
+                # 'project_submitted_datetime' : '2017-04-12 12:01:51',
+                # 'project_subject_subcategories': 'Team Sports',
+                # 'project_essay_3': '',
+                # 'project_essay_4': '',
+                # 'project_is_approved': 1, # This does not affect prediction, using just for consistency of df.shape
+
+
                 # Hard-coded Features
                 'Unnamed: 0' : 51266,
                 'id': 'p218094',
                 'teacher_id': '00000f7264c27ba6fea0c837ed6aa0aa',
                 'teacher_number_of_previously_posted_projects': 2,
                 'project_submitted_datetime' : '2017-01-09 19:01:51',
-                # 'project_subject_categories' : 'Special Needs',
-                'project_subject_subcategories': 'Special Needs',
+                'project_subject_subcategories': 'Literacy',
                 'project_essay_3': '',
                 'project_essay_4': '',
                 'project_is_approved': 1, # This does not affect prediction, using just for consistency of df.shape
+
 
                 # User Inputs
                 'teacher_prefix' : self.teacher_prefix,
@@ -215,6 +227,7 @@ class PredictOnUserInput:
             # Stacking all features together
             data_preprocess_obj3 = DataPreProcessing()
             predict_final_df = data_preprocess_obj3.merge_all_feats(df_non_nlp=predict_non_nlp_df, df_nlp_basic=predict_nlp_basic_df, df_nlp_w2v=predict_nlp_w2v_df)
+            predict_final_df_post_fe = predict_final_df.copy()
 
             # Dropping irrelevant columns
             predict_final_df = predict_final_df.drop(['id', 'project_is_approved'], axis=1).copy()
@@ -280,9 +293,19 @@ class PredictOnUserInput:
             # Performing Feature Scaling
             predict_final_scl = fitted_feat_scaler.transform(predict_final_df_mapped)
 
+
             print('Feature scaling done')
             print(predict_final_scl.shape)
             print('-'*print_sep_len)
+
+
+            # # DEBUG:
+            # # Post FE:
+            # predict_final_df_post_fe.to_csv('artifacts/predict_fe.csv', sep=',', index=False)
+            # # Post Cat2Num
+            # predict_final_df_mapped.to_csv('artifacts/predict_cat2num.csv', sep=',', index=False)
+            # # Post Feature Scaling
+            # pd.DataFrame(predict_final_scl).to_csv('artifacts/predict_scl.csv', sep=',', index=False)
 
 
             # Loading trained model for prediction
@@ -291,8 +314,8 @@ class PredictOnUserInput:
             print('-'*print_sep_len)
 
             # Prediction
-            prediction = trained_model.predict(predict_final_df)[0]
-            prediction_proba = np.round(trained_model.predict_proba(predict_final_df)[0][1], 2)
+            prediction = trained_model.predict(predict_final_scl)[0]
+            prediction_proba = np.round(trained_model.predict_proba(predict_final_scl)[0][1], 2)
             print('Prediction Completed')
             print('-'*print_sep_len)
 
