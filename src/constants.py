@@ -1,6 +1,7 @@
 import nltk
 from nltk.corpus import stopwords
 nltk.download('stopwords')
+nltk.download('punkt')
 
 # Define english stopwords
 STOPWORDS_ENGLISH = stopwords.words('english')
