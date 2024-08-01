@@ -1,4 +1,4 @@
-## End to End ML Project: Donor Choose Application Screening
+## End to End ML Project: DonorsChoose Application Screening
 
 
 ### Add project path to $PYTHONPATH environment variable:
