@@ -1,9 +1,14 @@
 ## End to End ML Project: DonorsChoose Application Screening
 
 
+------------------------------------------------------------------------------------------------
+### **Important Links:**
+1. [Deployed Web Application](https://donors-choose-application-screening.onrender.com/)
+2. [Tableau Dashboard](https://public.tableau.com/app/profile/iraban.dutta/viz/DonorChooseProjectApproval/Dashboard1)
+
 
 ------------------------------------------------------------------------------------------------
-### Steps to run the web application on your local machine:
+### **Steps to run the web application on your local machine:**
 1. Clone the git repository
 ```bash
 git clone <repository-url>
