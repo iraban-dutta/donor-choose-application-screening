@@ -5,6 +5,7 @@
 ### **Important Links:**
 1. [Deployed Web Application](https://donors-choose-application-screening.onrender.com/) (Deployment is on a free cloud plan, which may result in slower initial load times)
 2. [Tableau Dashboard](https://public.tableau.com/app/profile/iraban.dutta/viz/DonorsChooseProjectApproval/Dashboard1)
+3. [Technical Blog](https://medium.com/@irabandutta.2020/donorschoose-project-approval-prediction-cb0a74bb932b)
 
 <!-- ------------------------------------------------------------------------------------------------ -->
 ## Table of Contents:
@@ -23,14 +24,14 @@
 <!-- ------------------------------------------------------------------------------------------------ -->
 ## **Introduction:**
 
-DonorsChoose is a U.S.-based nonprofit organization that facilitates public school teachers in requesting funding for classroom projects. It connects donors with educators, enabling support for specific educational needs across the United States.
+DonorsChoose is a U.S.-based nonprofit organization that helps public school teachers request funding for classroom projects. It connects donors with educators, enabling support for specific educational needs across the United States.
 
-This project aims to predict whether a project proposal on DonorsChoose will be approved. The dataset comprises features related to project metadata and textual elements, including project titles, essays, and resource summaries. The problem statement that we are solving here was launched by DonorsChoose as a [Kaggle competition](https://www.kaggle.com/c/donorschoose-application-screening/overview).
+This project aims to predict whether a project proposal on DonorsChoose will be approved. The dataset comprises features related to project metadata and textual elements, including project titles, essays, and resource summaries. DonorsChoose launched the problem statement that we are solving here as a [Kaggle competition](https://www.kaggle.com/c/donorschoose-application-screening/overview).
 
 ### Project Highlights:
 - Demonstrated comprehensive data science skills across the entire ML project lifecycle, including data cleaning, exploratory data analysis (EDA), feature engineering, hypothesis testing, model selection, evaluation and deployment.
 - Employed advanced natural language processing (NLP) techniques to handle numerous textual features, enhancing model performance and interpretability.
-- Developed the project using robust coding practices and object-oriented programming (OOP) principles, ensuring maintainability, scalability and ease of understanding.
+- Developed the project using robust coding practices and object-oriented programming (OOP) principles, ensuring maintainability, scalability, and ease of understanding.
 - Created an interactive Tableau dashboard for visualizing basic features, offering insightful data exploration and visualization.
 
 
@@ -43,7 +44,6 @@ The initial steps involved extensive data cleaning and exploratory data analysis
 - Handling missing values through smart imputation techniques
 - Outlier detection using univariate analysis and necessary treatment
 - Converted two categorical features with multiple possible categories per row from a comma-separated format to a multi-hot encoded format.
-- While performing EDA, explored how each feature in the dataset impacted the target using appropriate analysis.
 
 <!-- ------------------------------------------------------------------------------------------------ -->
 ## **Feature Engineering:**
@@ -72,8 +72,8 @@ The initial steps involved extensive data cleaning and exploratory data analysis
 
 ### Basic NLP Features:
 Before generating the Basic NLP features we performed the following steps:
-- Extensive & Exhaustive Text Preprocessing:
-  - Basic Text Cleaning: Lowercasing, handling emojis, punctuations, escape sequences, stop-words etc.
+- Text Preprocessing:
+  - Basic Text Cleaning: Lowercasing, handling emojis, punctuations, escape sequences, stop-words, etc.
   - Tokenization: Splitting text into individual tokens (words or phrases) to facilitate analysis.
   - Stemming: Reduced words to their root forms to ensure consistency in feature extraction.
 - Objectives of Text Preprocessing:
@@ -85,7 +85,7 @@ A brief overview of the Basic NLP Features that were created:
   - Count of Emojis, Emoticons, Punctuations
   - Count of Sentences, Words, Characters, Capitalized Words, Stop Words
 - Ratio Features:
-  - Ratio of Words to Sentences, Characters to Words, Capitalized Words to  Words, Stop Words to Words etc.
+  - Ratio of Words to Sentences, Characters to Words, Capitalized Words to  Words, Stop Words to Words, etc.
 - Normalized Rejection Score:
   - Presence of Words in Rejected Proposals: A normalized score (ranging from 0 to 1) indicating the presence of words that are exclusive to rejected proposals.
 - Similarity Features (Between 2 Essays)
@@ -100,14 +100,17 @@ A brief overview of the Basic NLP Features that were created:
   - Vector Dimensions: Configured the Word2Vec model to create word vectors with 100 latent dimensions. This dimensionality strikes a balance between capturing meaningful word embeddings and managing computational efficiency.
 - Document Representation
   - Average Word2Vec Calculation: Represented each document by calculating the average of all Word2Vec vectors for the words present in the document. This aggregated vector provides a summary representation of the document’s semantic content.
-
-- Statistical Features
-  - Skewness and Kurtosis: Computed skewness and kurtosis for each document’s average Word2Vec vector.
+  - Statistical Features: Computed skewness and kurtosis for each document’s average Word2Vec vector to capture additional statistical properties.
 
 <!-- ------------------------------------------------------------------------------------------------ -->
 ## **Hypothesis Testing:**
 
+To validate the statistical significance of the features on the target variable, hypothesis testing was conducted as follows:
 
+- Numerical Features: Used t-tests to compare the means of numerical features between approved and non-approved projects.
+- Categorical Features: Employed Chi-squared tests to examine the associations between categorical features and the target variable.
+
+This step ensured that the features we selected had a meaningful relationship with the target variable, enhancing the model's predictive power.
 
 <!-- ------------------------------------------------------------------------------------------------ -->
 ## **Model Selection and Evaluation:**
@@ -125,6 +128,9 @@ The final model was selected based on the highest ROC-AUC score, indicating the 
 ### Summary:
 <img width="995" alt="image" src="https://github.com/user-attachments/assets/a43e7d0a-2f73-4d9e-91dc-f8e1f6d3126e">
 
+### ROC Curves:
+![ROC_Curve](https://github.com/user-attachments/assets/10916d4e-8526-4980-b1b3-bbae015c3542)
+
 <!-- ------------------------------------------------------------------------------------------------ -->
 ## **Deployment:**
 
@@ -132,8 +138,8 @@ The web application is deployed and accessible for public use. It includes a use
 
 - Framework: The web application is built using the Flask framework.
 - Hosting: The application is hosted on a free cloud platform, providing a cost-effective solution for deployment.
-  - Since the deployment is on a free cloud plan, the server may take a while to load and respond to the first request, especially after periods of long inactivity.
 - Model Integration: The trained machine learning model is integrated into the Flask server, allowing real-time predictions based on user input.
+- User Interactivity: To simplify the user experience, we hardcoded some less important input features, such as the project submission year, month, etc.
 
 <!-- ------------------------------------------------------------------------------------------------ -->
 ## **Run Web App Locally:**
