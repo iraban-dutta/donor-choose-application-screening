@@ -17,8 +17,9 @@
    - [Advanced NLP Features](#advanced-nlp-features-word2vec)
 4. [Hypothesis Testing](#hypothesis-testing)
 5. [Model Selection and Evaluation](#model-selection-and-evaluation)
-6. [Deployment](#deployment)
-7. [Run Web App Locally](#run-web-app-locally)
+6. [Model Training Workflow](#model-training-workflow)
+7. [Deployment](#deployment)
+8. [Run Web App Locally](#run-web-app-locally)
 
 
 <!-- ------------------------------------------------------------------------------------------------ -->
@@ -26,7 +27,7 @@
 
 DonorsChoose is a U.S.-based nonprofit organization that helps public school teachers request funding for classroom projects. It connects donors with educators, enabling support for specific educational needs across the United States.
 
-This project aims to predict whether a project proposal on DonorsChoose will be approved. The dataset comprises features related to project metadata and textual elements, including project titles, essays, and resource summaries. DonorsChoose launched the problem statement that we are solving here as a [Kaggle competition](https://www.kaggle.com/c/donorschoose-application-screening/overview).
+This project aims to predict whether a project proposal on DonorsChoose will be approved. The dataset comprises features related to project metadata and textual elements, including project titles, essays, and resource summaries. DonorsChoose had launched the problem statement we are solving here as a [Kaggle competition](https://www.kaggle.com/c/donorschoose-application-screening/overview).
 
 ### Project Highlights:
 - Demonstrated comprehensive data science skills across the entire ML project lifecycle, including data cleaning, exploratory data analysis (EDA), feature engineering, hypothesis testing, model selection, evaluation and deployment.
@@ -130,6 +131,11 @@ The final model was selected based on the highest ROC-AUC score, indicating the 
 
 ### ROC Curves:
 ![ROC_Curve](https://github.com/user-attachments/assets/10916d4e-8526-4980-b1b3-bbae015c3542)
+
+<!-- ------------------------------------------------------------------------------------------------ -->
+## **Model Training Workflow:**
+
+![MLProject_DonorsChoose_Workflow](https://github.com/user-attachments/assets/50a1a38e-c42a-49a2-b03c-d7ee60e6b1d8)
 
 <!-- ------------------------------------------------------------------------------------------------ -->
 ## **Deployment:**
