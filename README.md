@@ -9,17 +9,23 @@
 
 <!-- ------------------------------------------------------------------------------------------------ -->
 ## Table of Contents:
-1. [Introduction](#introduction)
-2. [Basic Data Cleaning and EDA](#basic-data-cleaning-and-eda)
-3. [Feature Engineering](#feature-engineering)
+1. [Web Application Snapshot](#web-application-snapshot)
+2. [Introduction](#introduction)
+3. [Basic Data Cleaning and EDA](#basic-data-cleaning-and-eda)
+4. [Feature Engineering](#feature-engineering)
    - [Non-NLP Features (Project Metadata)](#non-nlp-features-project-metadata)
    - [Basic NLP Features](#basic-nlp-features)
    - [Advanced NLP Features](#advanced-nlp-features-word2vec)
-4. [Hypothesis Testing](#hypothesis-testing)
-5. [Model Selection and Evaluation](#model-selection-and-evaluation)
-6. [Model Training Workflow](#model-training-workflow)
-7. [Deployment](#deployment)
-8. [Run Web App Locally](#run-web-app-locally)
+5. [Hypothesis Testing](#hypothesis-testing)
+6. [Model Selection and Evaluation](#model-selection-and-evaluation)
+7. [Model Training Workflow](#model-training-workflow)
+8. [Deployment](#deployment)
+9. [Run Web App Locally](#run-web-app-locally)
+
+
+<!-- ------------------------------------------------------------------------------------------------ -->
+## **Web Application Snapshot:**
+![image](https://github.com/user-attachments/assets/f7af1997-9d5e-4ca9-9bb1-ecc48b1074ad)
 
 
 <!-- ------------------------------------------------------------------------------------------------ -->
