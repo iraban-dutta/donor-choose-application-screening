@@ -3,7 +3,7 @@
 
 <!-- ------------------------------------------------------------------------------------------------ -->
 ### **Important Links:**
-1. [Deployed Web Application](https://donors-choose-application-screening.onrender.com/) (Deployment is on a free cloud plan, which may result in slower initial load times)
+1. [Deployed Web Application](https://donor-choose-application-screening.onrender.com/) (Deployment is on a free cloud plan, which may result in slower initial load times)
 2. [Tableau Dashboard](https://public.tableau.com/app/profile/iraban.dutta/viz/DonorsChooseProjectApproval/Dashboard1)
 3. [Technical Blog](https://medium.com/@irabandutta.2020/donorschoose-project-approval-prediction-cb0a74bb932b)
 
