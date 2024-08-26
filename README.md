@@ -9,8 +9,8 @@
 
 <!-- ------------------------------------------------------------------------------------------------ -->
 ## Table of Contents:
-1. [Web Application Snapshot](#web-application-snapshot)
-2. [Introduction](#introduction)
+1. [Introduction](#introduction)
+2. [Web Application Snapshot](#web-application-snapshot)
 3. [Basic Data Cleaning and EDA](#basic-data-cleaning-and-eda)
 4. [Feature Engineering](#feature-engineering)
    - [Non-NLP Features (Project Metadata)](#non-nlp-features-project-metadata)
@@ -21,11 +21,6 @@
 7. [Model Training Workflow](#model-training-workflow)
 8. [Deployment](#deployment)
 9. [Run Web App Locally](#run-web-app-locally)
-
-
-<!-- ------------------------------------------------------------------------------------------------ -->
-## **Web Application Snapshot:**
-![image](https://github.com/user-attachments/assets/f7af1997-9d5e-4ca9-9bb1-ecc48b1074ad)
 
 
 <!-- ------------------------------------------------------------------------------------------------ -->
@@ -40,6 +35,11 @@ This project aims to predict whether a project proposal on DonorsChoose will be 
 - Employed advanced natural language processing (NLP) techniques to handle numerous textual features, enhancing model performance and interpretability.
 - Developed the project using robust coding practices and object-oriented programming (OOP) principles, ensuring maintainability, scalability, and ease of understanding.
 - Created an interactive Tableau dashboard for visualizing basic features, offering insightful data exploration and visualization.
+
+
+<!-- ------------------------------------------------------------------------------------------------ -->
+## **Web Application Snapshot:**
+![image](https://github.com/user-attachments/assets/f7af1997-9d5e-4ca9-9bb1-ecc48b1074ad)
 
 
 <!-- ------------------------------------------------------------------------------------------------ -->
