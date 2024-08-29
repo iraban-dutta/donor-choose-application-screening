@@ -11,16 +11,17 @@
 ## Table of Contents:
 1. [Introduction](#introduction)
 2. [Web Application Snapshot](#web-application-snapshot)
-3. [Basic Data Cleaning and EDA](#basic-data-cleaning-and-eda)
-4. [Feature Engineering](#feature-engineering)
+3. [Tableau Dashboard Snapshot](#tableau-dashboard-snapshot)
+4. [Basic Data Cleaning and EDA](#basic-data-cleaning-and-eda)
+5. [Feature Engineering](#feature-engineering)
    - [Non-NLP Features (Project Metadata)](#non-nlp-features-project-metadata)
    - [Basic NLP Features](#basic-nlp-features)
    - [Advanced NLP Features](#advanced-nlp-features-word2vec)
-5. [Hypothesis Testing](#hypothesis-testing)
-6. [Model Selection and Evaluation](#model-selection-and-evaluation)
-7. [Model Training Workflow](#model-training-workflow)
-8. [Deployment](#deployment)
-9. [Run Web App Locally](#run-web-app-locally)
+6. [Hypothesis Testing](#hypothesis-testing)
+7. [Model Selection and Evaluation](#model-selection-and-evaluation)
+8. [Model Training Workflow](#model-training-workflow)
+9. [Deployment](#deployment)
+10. [Run Web App Locally](#run-web-app-locally)
 
 
 <!-- ------------------------------------------------------------------------------------------------ -->
@@ -39,7 +40,12 @@ This project aims to predict whether a project proposal on DonorsChoose will be 
 
 <!-- ------------------------------------------------------------------------------------------------ -->
 ## **Web Application Snapshot:**
-![image](https://github.com/user-attachments/assets/f7af1997-9d5e-4ca9-9bb1-ecc48b1074ad)
+<img width="761" alt="image" src="https://github.com/user-attachments/assets/5ba3aa42-ba8e-4fac-97f3-eb69144d2783">
+
+
+<!-- ------------------------------------------------------------------------------------------------ -->
+## **Tableau Dashboard Snapshot:**
+<img width="1500" alt="image" src="https://github.com/user-attachments/assets/d525a16d-9a85-4940-86bc-4f3d0ec8d315">
 
 
 <!-- ------------------------------------------------------------------------------------------------ -->
