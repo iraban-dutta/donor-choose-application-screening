@@ -12,16 +12,17 @@
 1. [Introduction](#introduction)
 2. [Web Application Snapshot](#web-application-snapshot)
 3. [Tableau Dashboard Snapshot](#tableau-dashboard-snapshot)
-4. [Basic Data Cleaning and EDA](#basic-data-cleaning-and-eda)
-5. [Feature Engineering](#feature-engineering)
+4. [Project Workflow](#project-workflow)
+5. [Basic Data Cleaning and EDA](#basic-data-cleaning-and-eda)
+6. [Feature Engineering](#feature-engineering)
    - [Non-NLP Features (Project Metadata)](#non-nlp-features-project-metadata)
    - [Basic NLP Features](#basic-nlp-features)
    - [Advanced NLP Features](#advanced-nlp-features-word2vec)
-6. [Hypothesis Testing](#hypothesis-testing)
-7. [Model Selection and Evaluation](#model-selection-and-evaluation)
-8. [Model Training Workflow](#model-training-workflow)
+7. [Hypothesis Testing](#hypothesis-testing)
+8. [Model Selection and Evaluation](#model-selection-and-evaluation)
 9. [Deployment](#deployment)
 10. [Run Web App Locally](#run-web-app-locally)
+
 
 
 <!-- ------------------------------------------------------------------------------------------------ -->
@@ -42,11 +43,13 @@ This project aims to predict whether a project proposal on DonorsChoose will be 
 ## **Web Application Snapshot:**
 <img width="761" alt="image" src="https://github.com/user-attachments/assets/5ba3aa42-ba8e-4fac-97f3-eb69144d2783">
 
-
 <!-- ------------------------------------------------------------------------------------------------ -->
 ## **Tableau Dashboard Snapshot:**
 <img width="1500" alt="image" src="https://github.com/user-attachments/assets/d525a16d-9a85-4940-86bc-4f3d0ec8d315">
 
+<!-- ------------------------------------------------------------------------------------------------ -->
+## **Project Workflow:**
+![MLProject_DonorsChoose_Workflow](https://github.com/user-attachments/assets/50a1a38e-c42a-49a2-b03c-d7ee60e6b1d8)
 
 <!-- ------------------------------------------------------------------------------------------------ -->
 ## **Basic Data Cleaning and EDA:**
@@ -143,11 +146,6 @@ The final model was selected based on the highest ROC-AUC score, indicating the 
 
 ### ROC Curves:
 ![ROC_Curve](https://github.com/user-attachments/assets/10916d4e-8526-4980-b1b3-bbae015c3542)
-
-<!-- ------------------------------------------------------------------------------------------------ -->
-## **Model Training Workflow:**
-
-![MLProject_DonorsChoose_Workflow](https://github.com/user-attachments/assets/50a1a38e-c42a-49a2-b03c-d7ee60e6b1d8)
 
 <!-- ------------------------------------------------------------------------------------------------ -->
 ## **Deployment:**
