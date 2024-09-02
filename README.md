@@ -6,6 +6,7 @@
 1. [Deployed Web Application](https://donor-choose-application-screening.onrender.com/) (Deployment is on a free cloud plan, which may result in slower initial load times)
 2. [Tableau Dashboard](https://public.tableau.com/app/profile/iraban.dutta/viz/DonorsChooseProjectApproval/Dashboard1)
 3. [Technical Blog](https://medium.com/@irabandutta.2020/donorschoose-project-approval-prediction-cb0a74bb932b)
+4. [Demo Video](https://drive.google.com/file/d/14hO6KSqi5yuaGz4Qo1a3eqjqIhSJ1k8C/view?usp=sharing)
 
 <!-- ------------------------------------------------------------------------------------------------ -->
 ## Table of Contents:
